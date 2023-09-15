@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="Acceso a datos">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/Acceso a datos/sqlite-tools-win32-x86-3430100.zip!/" />
+      <root url="jar://$PROJECT_DIR$/Acceso a datos/DB.Browser.for.SQLite-3.12.2-win32.zip!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
