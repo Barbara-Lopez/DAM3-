@@ -101,11 +101,13 @@ public class VerInf {
         File fichero = new File("C:\\Users\\9fdam03\\Desktop\\Clase\\DAM3-\\Acceso a datos\\Actividad1\\src\\FichData.dat");
         FileInputStream fileout = new FileInputStream(fichero);
         DataInputStream dataOS = new DataInputStream(fileout);
+        try {
+            while (dataOS.available() != -1) { //lee datos del flujo de entrada
+                System.out.println(dataOS.readUTF() + ", " + dataOS.readInt());
 
-        while (dataOS.available() != -1) { //lee datos del flujo de entrada
-            System.out.println(dataOS.readUTF()+ ", " + dataOS.readInt());
+            }
+        }catch (EOFException eo){}
 
-        }
         dataOS.close(); //cerrar stream de entrada
 
     }
