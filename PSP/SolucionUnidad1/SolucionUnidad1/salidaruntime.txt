@@ -1,0 +1,18 @@
+ El volumen de la unidad D es Eider
+ El n£mero de serie del volumen es: 64F7-065A
+
+ Directorio de D:\Curso2324\PSP\UNIDAD 1\ejerccios\SolucionUnidad1
+
+05/09/2023  12:49    <DIR>          .
+05/09/2023  12:49    <DIR>          ..
+19/09/2022  11:51               433 SolucionUnidad1.iml
+05/09/2023  12:49    <DIR>          out
+05/09/2023  12:49    <DIR>          src
+13/09/2023  10:33                 0 notas2.txt
+13/09/2023  21:40                 0 Error.txt
+13/09/2023  21:48               767 salidaruntime.txt
+13/09/2023  21:48               100 Sin error
+13/09/2023  21:48               767 output.txt
+13/09/2023  21:48                 0 mal.txt
+               7 archivos          2.067 bytes
+               4 dirs  3.949.581.041.664 bytes libres

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="0014a07c-7fdc-4111-aba4-b1abc16a7e86" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/../EjerciciosUnidad1/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../SolucionUnidad1.zip" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SolucionUnidad1.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SolucionUnidad1/.idea/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SolucionUnidad1/.idea/description.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SolucionUnidad1/.idea/encodings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SolucionUnidad1/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SolucionUnidad1/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SolucionUnidad1/.idea/project-template.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SolucionUnidad1/.idea/uiDesigner.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SolucionUnidad1/Error.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SolucionUnidad1/Sin error" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SolucionUnidad1/SolucionUnidad1.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SolucionUnidad1/mal.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SolucionUnidad1/notas2.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SolucionUnidad1/out/production/SolucionUnidad1/Ejer1.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SolucionUnidad1/out/production/SolucionUnidad1/Ejer2.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SolucionUnidad1/out/production/SolucionUnidad1/Ejer3.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SolucionUnidad1/out/production/SolucionUnidad1/Ejer4.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SolucionUnidad1/out/production/SolucionUnidad1/Ejer5.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SolucionUnidad1/out/production/SolucionUnidad1/com/company/BAtiburrillo.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SolucionUnidad1/out/production/SolucionUnidad1/com/company/Main.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SolucionUnidad1/output.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SolucionUnidad1/salidaruntime.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SolucionUnidad1/src/Ejer1.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SolucionUnidad1/src/Ejer2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SolucionUnidad1/src/Ejer3.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SolucionUnidad1/src/Ejer4.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SolucionUnidad1/src/Ejer5.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SolucionUnidad1/src/com/company/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../EjerciciosUnidad1/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../EjerciciosUnidad1/.idea/misc.xml" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 6
+}</component>
+  <component name="ProjectId" id="2VcxeGuWM3ABJATFCfNUcSXZAo3" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/9fdam03/Desktop/Clase/DAM3-/PSP/SolucionUnidad1&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="0014a07c-7fdc-4111-aba4-b1abc16a7e86" name="Changes" comment="" />
+      <created>1695149262283</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1695149262283</updated>
+      <workItem from="1695149263299" duration="61000" />
+      <workItem from="1695149356576" duration="58000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>
