@@ -7,9 +7,11 @@ public class Main {
         HiloRunnable hiloR = new HiloRunnable(); // no es un hilo
         Thread hiloRun = new Thread(hiloR); // esto si que es un hilo
 
-
+        hiloNum.setName("numeros");
         hiloNum.start();
+        hiloL.setName("letras minusculas");
         hiloL.start();
+        hiloRun.setName("letras mayusculas");
         hiloRun.start();
 
     }
