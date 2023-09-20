@@ -2,6 +2,7 @@ import com.db4o.Db4oEmbedded;
 import com.db4o.ObjectContainer;
 import com.db4o.ObjectSet;
 
+import java.util.Objects;
 import java.util.Scanner;
 
 // Press Shift twice to open the Search Everywhere dialog and type `show whitespaces`,
@@ -11,47 +12,138 @@ public class Main {
 
     public static void main(String[] args) {
 
-        // Texto inicial
-        Integer op;
+        Integer op = 0;
+
         do {
-            Scanner lectura = new Scanner(System.in);
-            System.out.println("Elija que quiere gestionar (1-3): \n 1.Departamentos \n 2.Empleados \n 3.salir");
-            op = Integer.parseInt(lectura.next());
+            try {
+                Scanner lectura = new Scanner(System.in);
+                System.out.println("Elija que quiere gestionar (1-3): \n 1.Departamentos \n 2.Empleados \n 3.salir");
+                op = Integer.parseInt(lectura.next()) ;
 
-            if (op == 1) {
-                // Departamentos
-                System.out.println("Elija que quiere hacer con los Departamentos (1-2): \n 1.Generar departamentos automaticamente \n 2.Eliminarlos \n 3.Modificarlos");
-                Integer op1 = Integer.parseInt(lectura.next());
-                if (op1 == 1) {
-                    generarDepartAuto();
+                switch (op) {
+                    case 1:
+                        // Departamentos
+                        System.out.println("Elija que quiere hacer con los Departamentos (1-4): \n 1.Generar departamentos automaticamente \n 2.Eliminarlos \n 3.Modificarlos \n 4.Añadir departamentos");
+                        Integer op1 = Integer.parseInt(lectura.next()) ;
+                        switch(op1) {
+                            case 1:
+                                generarDepartAuto();
+                                break;
+                            case 2:
+                                eliminarDepart();
+                                break;
+                            case 3:
+                                modificarDepart();
+                                break;
+                            case 4:
+                                anadirDepart();
+                                break;
+                            default:
+                                throw new Exception("Tiene que escribir del '1' al '4'");
+                        }
+                        break;
+                    case 2:
+                        // Empleados
+                        System.out.println("Elija que quiere hacer con los Empleados (1-4): \n 1.Generar empleados automaticamente \n 2.Eliminarlos \n 3.Modificar \n 4.Añadir empleados");
+                        Integer op2 = Integer.parseInt(lectura.next()) ;
+                        switch(op2) {
+                            case 1:
+                                generarEmpleAuto();
+                                break;
+                            case 2:
+                                eliminarEmple();
+                                break;
+                            case 3:
+                                modificarEmple();
+                                break;
+                            case 4:
+                                anadirEmple();
+                                break;
+                            default:
+                                throw new Exception("Tiene que escribir del '1' al '4'");
+                        }
+                        break;
+                    case 3:
+                        System.out.println("Acaba de salir de la aplicación");
+                        break;
+                    default:
+                        throw new Exception("Tiene que escribir del '1' al '3'");
                 }
-                if(op1 == 2){
-                    eliminarDepart();
-                }
-                if(op1 == 3){
-                    modificarDepart();
+            } catch (NumberFormatException ex){
+                System.out.println("Tienes que escribir un numero");
+            } catch (Exception e){
+                System.out.println(e.getMessage());
+            }
+
+        } while (op!=3);
+        
+
+    }
+
+    private static void anadirEmple() {
+        ObjectContainer db= Db4oEmbedded.openFile(Db4oEmbedded.newConfiguration(),BDPer);
+
+        Integer idEmple;
+        Scanner lectura = new Scanner(System.in);
+        while(true){
+            try{
+                System.out.println("Escriba el id del nuevo empleado: ");
+                idEmple = Integer.parseInt(lectura.next()) ;
+                break;
+            }catch (NumberFormatException e){
+                System.out.println("Tienes que escribir un numero");
+            }
+        }
+        Boolean existeEmple = buscarEmple(db,idEmple);
+        if(existeEmple){
+            System.out.println("Empleado con ese id ya existe");
+        }else{
+            System.out.println("Escriba el monbre del nuevo empleado: ");
+            String nombreEmple = lectura.next() ;
+            System.out.println("Escriba el puesto del nuevo empleado: ");
+            String puestoEmple = lectura.next() ;
+            Integer idDepEmple;
+            while(true){
+                try{
+                    String text=visualizarDepart(db);
+                    System.out.println("Escriba el id del departamento al que pertenece el nuevo empleado: \n"+text);
+                    idDepEmple = Integer.parseInt(lectura.next()) ;
+                    Boolean existeDept =buscarDepart(db, idDepEmple);
+                    if(existeDept){
+                        break;
+                    }
+                }catch (NumberFormatException e){
+                    System.out.println("Tienes que escribir un numero");
                 }
             }
-            if (op == 2) {
-                // Empleados
-                System.out.println("Elija que quiere hacer con los Empleados (1-2): \n 1.Generar empleados automaticamente \n 2.Eliminarlos \n 3.Modificar");
-                Integer op2 = Integer.parseInt(lectura.next());
-                if (op2 == 1) {
-                    generarEmpleAuto();
-                }
-                if(op2 == 2){
-                    eliminarEmple();
-                }
-                if(op2 == 3){
-                    modificarEmple();
-                }
-            }
-            if (op == 3) {
-                System.out.println("Acaba de salir de la aplicación");
-            }
-        } while (op != 3);
+
+            db.store(new Empleado(idEmple,nombreEmple ,puestoEmple,idDepEmple));
+            System.out.println("Empleado con el nombre "+nombreEmple +" añadido" );
+        }
+
+        db.close();
+    }
+
+    private static void anadirDepart() {
+        ObjectContainer db= Db4oEmbedded.openFile(Db4oEmbedded.newConfiguration(),BDPer);
+        Integer id = generarIdDepart(db);
+
+        Scanner lectura = new Scanner(System.in);
+        System.out.println("Escriba el nombre del nuevo departamento: ");
+        String depNombre = lectura.next();
+        Boolean existeNombre = buscarNombreDepart(db,depNombre.toUpperCase());
+
+        if(existeNombre){
+            System.out.println("Departamento con ese nombre ya existe");
+        }else{
+            System.out.println("Escriba el nombre de la ciudad: ");
+            String depCiudad = lectura.next();
+            db.store(new Departamento(id, depNombre.toUpperCase(), depCiudad.toUpperCase()));
+            System.out.println("Departamento con el nombre "+depNombre +" añadido" );
+        }
 
 
+        db.close();
     }
 
     private static void modificarEmple() {
@@ -339,9 +431,31 @@ public class Main {
     }
 
 
-
+    public static int generarIdDepart(ObjectContainer db){
+        Departamento dep = new Departamento(null,null,null);
+        ObjectSet<Departamento> result = db.queryByExample(dep);
+        if (result.size() == 0){
+            return 10;
+        } else {
+            Integer id = 0;
+            while (result.hasNext()) {
+                Departamento d = result.next();
+                id = d.getId_depart();
+            }
+            return id+10;
+        }
+    }
     public static boolean buscarDepart(ObjectContainer db, Integer idDepart){
         Departamento dep = new Departamento(idDepart,null,null);
+        ObjectSet<Departamento> result = db.queryByExample(dep);
+        if (result.size() == 0){
+            return false;
+        } else {
+            return true;
+        }
+    }
+    public static boolean buscarNombreDepart(ObjectContainer db, String nombre){
+        Departamento dep = new Departamento(null,nombre,null);
         ObjectSet<Departamento> result = db.queryByExample(dep);
         if (result.size() == 0){
             return false;
