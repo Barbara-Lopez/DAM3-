@@ -20,7 +20,7 @@ public class Main {
 
             if (op == 1) {
                 // Departamentos
-                System.out.println("Elija que quiere hacer con los Departamentos (1-2): \n 1.Generar departamentos automaticamente \n 2.Eliminarlos");
+                System.out.println("Elija que quiere hacer con los Departamentos (1-2): \n 1.Generar departamentos automaticamente \n 2.Eliminarlos \n 3.Modificarlos");
                 Integer op1 = Integer.parseInt(lectura.next());
                 if (op1 == 1) {
                     generarDepartAuto();
@@ -28,16 +28,22 @@ public class Main {
                 if(op1 == 2){
                     eliminarDepart();
                 }
+                if(op1 == 3){
+                    modificarDepart();
+                }
             }
             if (op == 2) {
                 // Empleados
-                System.out.println("Elija que quiere hacer con los Empleados (1-2): \n 1.Generar empleados automaticamente \n 2.Eliminarlos");
+                System.out.println("Elija que quiere hacer con los Empleados (1-2): \n 1.Generar empleados automaticamente \n 2.Eliminarlos \n 3.Modificar");
                 Integer op2 = Integer.parseInt(lectura.next());
                 if (op2 == 1) {
                     generarEmpleAuto();
                 }
                 if(op2 == 2){
                     eliminarEmple();
+                }
+                if(op2 == 3){
+                    modificarEmple();
                 }
             }
             if (op == 3) {
@@ -46,6 +52,111 @@ public class Main {
         } while (op != 3);
 
 
+    }
+
+    private static void modificarEmple() {
+        ObjectContainer db= Db4oEmbedded.openFile(Db4oEmbedded.newConfiguration(),BDPer);
+
+        String text=visualizarEmple(db);
+        if(text==""){
+            System.out.println("NO hay empleados");
+        }else {
+            Scanner lectura = new Scanner(System.in);
+            System.out.println("Escriba el id del empleado que quiere modificar : \n" + text);
+            Integer empleId = Integer.parseInt(lectura.next());
+            modEmple(db,empleId);
+        }
+        db.close();
+    }
+
+    private static void modEmple(ObjectContainer db, Integer empleId) {
+        Empleado emple = new Empleado(empleId, null,null,null);
+        ObjectSet<Empleado> result = db.queryByExample(emple);
+        if (result.size() == 0){
+            System.out.println( "No existe el empleado con el id " + empleId);
+        }else{
+            while (result.hasNext()) {
+                Empleado existe = result.next();
+
+                Scanner lectura = new Scanner(System.in);
+                System.out.println("¿Quiere modificar el nombre? si/no");
+                String empNombre = lectura.next();
+                if (empNombre.equalsIgnoreCase("si")){
+                    System.out.println("Escriba el nuevo nombre del departamento");
+                    empNombre = lectura.next();
+                    existe.setNombre(empNombre);
+                }
+                System.out.println("¿Quiere modificar el puesto? si/no");
+                String empPuesto = lectura.next();
+                if (empPuesto.equalsIgnoreCase("si")){
+                    System.out.println("Escriba escriba el nuevo puesto al que pertenece el empleado "+ existe.getNombre()+": ");
+                    empPuesto = lectura.next();
+                    existe.setPuesto(empPuesto);
+                }
+                System.out.println("¿Quiere modificar el departamentoal que pertenece? si/no");
+                String empDep= lectura.next();
+                if (empDep.equalsIgnoreCase("si")){
+                    String text=visualizarDepart(db);
+                    System.out.println("Escriba escriba el nuevo puesto al que pertenece el empleado "+ existe.getNombre()+": \n"+ text);
+                    Integer empDep_id = Integer.parseInt(lectura.next());
+                    Boolean existeDep = buscarDepart(db,empDep_id);
+                    if(existeDep=true){
+                        existe.setDepart(empDep_id);
+                    }else{
+                        System.out.println("El departamento con id " + empDep_id + " no existe");
+                    }
+                }
+
+                db.store(existe);
+                System.out.println("Id: "+existe.getId_emp()+", Nombre del empleado: "+ existe.getNombre()+ ", Puesto:" + existe.getPuesto()+", Departamento: "+existe.getDepart());
+            }
+        }
+    }
+
+    private static void modificarDepart() {
+        ObjectContainer db= Db4oEmbedded.openFile(Db4oEmbedded.newConfiguration(),BDPer);
+
+        String text=visualizarDepart(db);
+        if(text==""){
+            System.out.println("NO hay departamentos");
+        }else {
+            Scanner lectura = new Scanner(System.in);
+            System.out.println("Escriba el id del departamento que quiere modificar : \n" + text);
+            Integer depId = Integer.parseInt(lectura.next());
+            modDepart(db,depId);
+        }
+        db.close();
+    }
+
+    private static void modDepart(ObjectContainer db, Integer depId) {
+        Departamento dep = new Departamento(depId, null,null);
+        ObjectSet<Departamento> result = db.queryByExample(dep);
+        if (result.size() == 0){
+            System.out.println( "No existe el departamento con el id " + depId);
+        }else{
+            while (result.hasNext()) {
+                Departamento existe = result.next();
+
+                Scanner lectura = new Scanner(System.in);
+                System.out.println("¿Quiere modificar el nombre? si/no");
+                String depNombre = lectura.next();
+                if (depNombre.equalsIgnoreCase("si")){
+                    System.out.println("Escriba el nuevo nombre del departamento");
+                    depNombre = lectura.next();
+                    existe.setNombre(depNombre);
+                }
+                System.out.println("¿Quiere modificar la ciudad? si/no");
+                String depCiudad = lectura.next();
+                if (depCiudad.equalsIgnoreCase("si")){
+                    System.out.println("Escriba escriba la nueva ciudad de departamento "+ existe.getNombre()+": ");
+                    depCiudad = lectura.next();
+                    existe.setCiudad(depCiudad);
+                }
+
+                db.store(existe);
+                System.out.println("Id: "+existe.getId_depart()+", Nombre del departamento: "+ existe.getNombre()+ ", Ciudad:" + existe.getCiudad());
+            }
+        }
     }
 
     private static void eliminarEmple() {
