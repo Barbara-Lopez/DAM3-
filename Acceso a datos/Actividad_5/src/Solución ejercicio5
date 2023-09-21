@@ -1,0 +1,18 @@
+Como la integridad no se respeta tanto en la BBDD como en la
+integridad referencial, para solucionarlo he hecho un codigo en el que
+se verifica antes de añadir, modificar y eliminar.
+
+-Añadir:
+    Departamentos: se verifica que el nombre del departamento no sea igual,
+        el id cojo el ultimo y se le añade 10.
+    Empleados: como no se el codigo el empleado he hecho que me de un numerico,
+        a la hora de meterlo en un departamento se verifica que el departamento existe.
+-Modificar:
+    Tanto en el departamento como en el empleado no se modifica el id para no tener problemas con el
+
+    Empleados: se verifica que el departamento al que quiere cambiarlo existe.
+
+-Eliminar:
+    Al eliminar un departamento se eliminan los empleados para evitar
+    tener empleados de un departamento inexistente.
+

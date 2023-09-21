@@ -5,8 +5,6 @@ import com.db4o.ObjectSet;
 import java.util.Objects;
 import java.util.Scanner;
 
-// Press Shift twice to open the Search Everywhere dialog and type `show whitespaces`,
-// then press Enter. You can now see whitespace characters in your code.
 public class Main {
     final static String BDPer = "EMPLEDEP.yap";
 
@@ -23,7 +21,8 @@ public class Main {
                 switch (op) {
                     case 1:
                         // Departamentos
-                        System.out.println("Elija que quiere hacer con los Departamentos (1-4): \n 1.Generar departamentos automaticamente \n 2.Eliminarlos \n 3.Modificarlos \n 4.Añadir departamentos");
+                        System.out.println("Elija que quiere hacer con los Departamentos (1-5): \n 1.Generar departamentos automaticamente \n 2.Eliminarlos " +
+                                "\n 3.Modificarlos \n 4.Añadir departamentos \n 5.Buscar empleados por departamento");
                         Integer op1 = Integer.parseInt(lectura.next()) ;
                         switch(op1) {
                             case 1:
@@ -37,6 +36,9 @@ public class Main {
                                 break;
                             case 4:
                                 anadirDepart();
+                                break;
+                            case 5:
+                                buscarEmpleDepart();
                                 break;
                             default:
                                 throw new Exception("Tiene que escribir del '1' al '4'");
@@ -76,8 +78,28 @@ public class Main {
             }
 
         } while (op!=3);
-        
+    }
 
+    private static void buscarEmpleDepart() {
+        ObjectContainer db= Db4oEmbedded.openFile(Db4oEmbedded.newConfiguration(),BDPer);
+
+        Integer idDep;
+        Scanner lectura = new Scanner(System.in);
+        String text=visualizarDepart(db);
+        if(text==""){
+            System.out.println("NO hay departamentos");
+        }
+        while(true){
+            try{
+                System.out.println("Escriba el id del departamento: "+ text);
+                idDep = Integer.parseInt(lectura.next()) ;
+                break;
+            }catch (NumberFormatException e){
+                System.out.println("Tienes que escribir un numero");
+            }
+        }
+        buscarEmpleDep(db, idDep);
+        db.close();
     }
 
     private static void anadirEmple() {
@@ -198,10 +220,10 @@ public class Main {
                 String empDep= lectura.next();
                 if (empDep.equalsIgnoreCase("si")){
                     String text=visualizarDepart(db);
-                    System.out.println("Escriba escriba el nuevo puesto al que pertenece el empleado "+ existe.getNombre()+": \n"+ text);
+                    System.out.println("Escriba escriba el nuevo departamento al que pertenece el empleado "+ existe.getNombre()+": \n"+ text);
                     Integer empDep_id = Integer.parseInt(lectura.next());
                     Boolean existeDep = buscarDepart(db,empDep_id);
-                    if(existeDep=true){
+                    if(existeDep){
                         existe.setDepart(empDep_id);
                     }else{
                         System.out.println("El departamento con id " + empDep_id + " no existe");
@@ -505,6 +527,18 @@ public class Main {
             return false;
         } else {
             return true;
+        }
+    }
+    public static void buscarEmpleDep(ObjectContainer db, Integer idDep){
+        Empleado emple = new Empleado(null,null,null,idDep);
+        ObjectSet<Empleado> result = db.queryByExample(emple);
+        if (result.size() == 0){
+            System.out.println("No hay empleados para el departamento "+idDep );
+        } else {
+            while (result.hasNext()) {
+                Empleado e = result.next();
+                System.out.println("\tNombre: " + e.getNombre()+", Puesto: " + e.getPuesto()+", Departamento: "+ e.getDepart());
+            }
         }
     }
 }
