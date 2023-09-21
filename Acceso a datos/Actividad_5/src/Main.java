@@ -154,8 +154,17 @@ public class Main {
             System.out.println("NO hay empleados");
         }else {
             Scanner lectura = new Scanner(System.in);
-            System.out.println("Escriba el id del empleado que quiere modificar : \n" + text);
-            Integer empleId = Integer.parseInt(lectura.next());
+            Integer empleId;
+            while(true){
+                try{
+                    System.out.println("Escriba el id del empleado que quiere modificar : \n" + text);
+                    empleId = Integer.parseInt(lectura.next());
+                    break;
+                }catch (NumberFormatException e){
+                    System.out.println("Tienes que escribir un numero");
+                }
+            }
+
             modEmple(db,empleId);
         }
         db.close();
@@ -213,8 +222,16 @@ public class Main {
             System.out.println("NO hay departamentos");
         }else {
             Scanner lectura = new Scanner(System.in);
-            System.out.println("Escriba el id del departamento que quiere modificar : \n" + text);
-            Integer depId = Integer.parseInt(lectura.next());
+            Integer depId;
+            while(true){
+                try{
+                    System.out.println("Escriba el id del departamento que quiere modificar : \n" + text);
+                    depId = Integer.parseInt(lectura.next());
+                    break;
+                }catch (NumberFormatException e){
+                    System.out.println("Tienes que escribir un numero");
+                }
+            }
             modDepart(db,depId);
         }
         db.close();
@@ -258,8 +275,17 @@ public class Main {
         if(text==""){
             System.out.println("NO hay empleados");
         }else {
-            System.out.println("Escriba el id del empleado que quiere eliminar: \n" + text);
-            Integer empleId = Integer.parseInt(lectura.next());
+            Integer empleId;
+            while(true){
+                try{
+                    System.out.println("Escriba el id del empleado que quiere eliminar: \n" + text);
+                    empleId = Integer.parseInt(lectura.next());
+                    break;
+                }catch (NumberFormatException e){
+                    System.out.println("Tienes que escribir un numero");
+                }
+            }
+
             elimEmple(db, empleId, "emple");
         }
         db.close();
@@ -273,8 +299,17 @@ public class Main {
         if(text==""){
             System.out.println("NO hay departamentos");
         }else {
-            System.out.println("Escriba el id del departamento que quiere eliminar (los empleados tambien se eliminarán): \n" + text);
-            Integer depId = Integer.parseInt(lectura.next());
+            Integer depId;
+            while(true){
+                try{
+                    System.out.println("Escriba el id del departamento que quiere eliminar (los empleados tambien se eliminarán): \n" + text);
+                    depId = Integer.parseInt(lectura.next());
+                    break;
+                }catch (NumberFormatException e){
+                    System.out.println("Tienes que escribir un numero");
+                }
+            }
+
             Boolean eliminado = elimDepart(db, depId);
             if (eliminado) {
                 elimEmple(db, depId, "depart");
