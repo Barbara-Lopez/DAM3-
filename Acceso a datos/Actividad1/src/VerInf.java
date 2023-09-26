@@ -1,8 +1,10 @@
 import java.io.*;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class VerInf {
-    public static void main(String[] args) throws IOException, EOFException{
+    public static void main(String[] args) throws IOException, EOFException, ClassNotFoundException {
 
        /* System.out.println("Información de este fichero:");
         File f = new File("src/VerInf.java");
@@ -98,6 +100,7 @@ public class VerInf {
         }
         dataOS.close();
         */
+        /*
         File fichero = new File("C:\\Users\\9fdam03\\Desktop\\Clase\\DAM3-\\Acceso a datos\\Actividad1\\src\\FichData.dat");
         FileInputStream fileout = new FileInputStream(fichero);
         DataInputStream dataOS = new DataInputStream(fileout);
@@ -108,7 +111,78 @@ public class VerInf {
             }
         }catch (EOFException eo){}
 
-        dataOS.close(); //cerrar stream de entrada
+        dataOS.close(); //cerrar stream de entrada*/
+
+        // Ejercicio 7
+        /*File fichero = new File("C:\\Users\\9fdam03\\Desktop\\Clase\\DAM3-\\Acceso a datos\\Actividad1\\src\\Personas.dat");
+        FileOutputStream fileout = new FileOutputStream(fichero);
+        ObjectOutputStream dataOS = new ObjectOutputStream(fileout);
+        String nombres[] = {"Ana","Luis, Miguel","Alicia","Pedro","Manuel","Andrés",
+                "Julio","Antonio","María Jesús"};
+        int edades[] = {14,15,13,15,16,12,16,14,13};
+
+        for (int i=0;i<edades.length; i++){
+            Persona per = new Persona(nombres[i], edades[i]);
+            dataOS.writeObject(per);
+        }
+        dataOS.close();
+
+
+        File fichero2 = new File("C:\\Users\\9fdam03\\Desktop\\Clase\\DAM3-\\Acceso a datos\\Actividad1\\src\\Personas.dat");
+        FileInputStream fileout2 = new FileInputStream(fichero2);
+        ObjectInputStream dataOS2 = new ObjectInputStream(fileout2);
+        try {
+            while (dataOS2.available() != -1) { //lee datos del flujo de entrada
+                Persona per = (Persona) dataOS2.readObject();
+                System.out.println(" Nombre: " + per.getNombre() + ", Edad: "+ per.getEdad());
+
+
+            }
+        }catch (EOFException eo){}
+
+        dataOS2.close();
+        */
+
+        // Ejercicio8
+        /*File fichero = new File("C:\\Users\\9fdam03\\Desktop\\Clase\\DAM3-\\Acceso a datos\\Actividad1\\src\\Departamentos.dat");
+        FileOutputStream fileout = new FileOutputStream(fichero);
+        ObjectOutputStream dataOS = new ObjectOutputStream(fileout);
+        String nombres[] = { "INFORMÁTICA", "MÁRKETING", "CONTABILIDAD", "VENTAS",
+                "COMPRAS", "PERSONAL", "RECURSOS", "ADMINISTRACIÓN", "ECONOMÍA" };
+        int num[] = { 10, 15, 20, 25, 30, 35, 40, 45, 50 };
+        String loc[] = { "MADRID", "SEVILLA", "LEÓN", "TOLEDO", "GUADALAJARA",
+                "CUENCA", "OVIEDO", "BILBAO", "VALENCIA" };
+
+        for (int i=0;i<num.length; i++){
+            Departamentos dep = new Departamentos(nombres[i], num[i],loc[i]);
+            dataOS.writeObject(dep);
+        }
+        dataOS.close();
+
+
+        File fichero2 = new File("C:\\Users\\9fdam03\\Desktop\\Clase\\DAM3-\\Acceso a datos\\Actividad1\\src\\Departamentos.dat");
+        FileInputStream fileout2 = new FileInputStream(fichero2);
+        ObjectInputStream dataOS2 = new ObjectInputStream(fileout2);
+        try {
+            while (dataOS2.available() != -1) { //lee datos del flujo de entrada
+                Departamentos dep = (Departamentos) dataOS2.readObject();
+                System.out.println("Id: "+dep.getDep()+", Nombre: " + dep.getNombre() + ", Localidad: "+ dep.getLoc());
+
+
+            }
+        }catch (EOFException eo){}
+
+        dataOS2.close();*/
+
+        // Ejercicio 9
+        String apellidos[]={"Lopez","Garcia","Mediero"};
+        String departamentos[]={"Mantenimiento","Ventas","Almacen"};
+        int salario[]={2000,1100,1500};
+
+        RandomAccessFile file=new RandomAccessFile("C:\\Users\\9fdam03\\Desktop\\Clase\\DAM3-\\Acceso a datos\\Actividad1\\src\\Empleados.dat", "rw");
+        StringBuffer buffer = null;
+
+
 
     }
 
