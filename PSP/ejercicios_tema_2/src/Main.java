@@ -3,7 +3,7 @@ import java.lang.reflect.Array;
 // Press Shift twice to open the Search Everywhere dialog and type `show whitespaces`,
 // then press Enter. You can now see whitespace characters in your code.
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         //ejercicio 1
         /*hilo hiloNum1 = new hilo("j");
         hilo hiloNum2 = new hilo("w");
@@ -45,24 +45,35 @@ public class Main {
         saludo6.start();*/
 
         // Ejercicio 4
-        int[] array;
+        //int[] array;
 
 
 
 
 
         // Ejercicio 5
-            double[] cajera1;
-            double[] cajera2 = new double[11.23,123.23];
+            /*double[] cajera1;
+            double[] cajera2 = new double[11.23,123.23];*/
 
 
 
 
 
-        // Ejercicio 6
+        // Ejercicio 7
+        // compartir informacion entre varios hilos
+        compartida c=new compartida();
+        hilocontador hilo1= new hilocontador(c);
+        hilocontador hilo2= new hilocontador(c);
 
 
+        hilo1.start();
+        hilo2.start();
 
+
+        hilo1.join();
+        hilo2.join();
+
+        hilo1.resultadoContador();
 
     }
 }
