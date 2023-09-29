@@ -35,3 +35,5 @@ INSERT INTO `prueba`.`empleados` (`emp_no`, `apellido`, `oficio`,dir,fecha_alt,s
 select apellido,oficio,salario from empleados where dept_no=10;
  update empleados set salario=1500.0 where apellido='PEPE' and apellido='ALBERTO';
 select apellido,salario from empleados where salario=(select max(salario) from empleados);
+select apellido,salario from empleados where emp_no=4457;
+update empleados set salario =2000 where comision=10;
