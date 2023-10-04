@@ -22,4 +22,5 @@ public class contador {
         cont = cont+1;
         semaforo.release();
     }
+
 }
