@@ -1,17 +1,20 @@
+import cuenta.Ahorrar;
+import cuenta.cuenta;
+import cuenta.Gastar;
 // Press Shift twice to open the Search Everywhere dialog and type `show whitespaces`,
 // then press Enter. You can now see whitespace characters in your code.
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
 
-        cestos c=new cestos(0,0);
-        mangas m1=new mangas(c);
-        mangas m2=new mangas(c);
-        mangas m3=new mangas(c);
-        mangas m4=new mangas(c);
-        cuerpos c1=new cuerpos(c);
-        cuerpos c2=new cuerpos(c);
-        jerseis j=new jerseis(c);
-        jerseis j1=new jerseis(c);
+        /*jerseis.cestos c=new jerseis.cestos(0,0);
+        jerseis.mangas m1=new jerseis.mangas(c);
+        jerseis.mangas m2=new jerseis.mangas(c);
+        jerseis.mangas m3=new jerseis.mangas(c);
+        jerseis.mangas m4=new jerseis.mangas(c);
+        jerseis.cuerpos c1=new jerseis.cuerpos(c);
+        jerseis.cuerpos c2=new jerseis.cuerpos(c);
+        jerseis.jerseis j=new jerseis.jerseis(c);
+        jerseis.jerseis j1=new jerseis.jerseis(c);
 
         m1.start();
         m2.start();
@@ -22,6 +25,25 @@ public class Main {
         j.start();
         j.setName("jersei 1");
         j1.start();
-        j1.setName("jersei 2");
+        j1.setName("jersei 2");*/
+
+        cuenta c = new cuenta(250);
+        Ahorrar a1= new Ahorrar(c);
+        Ahorrar a2 = new Ahorrar(c);
+        Gastar g1=new Gastar(c);
+        Gastar g2=new Gastar(c);
+
+        a1.start();
+        a2.start();
+        g1.start();
+        g2.start();
+
+        a1.join();
+        a2.join();
+        g1.join();
+        g2.join();
+
+        c.saldoFinal();
+
     }
 }

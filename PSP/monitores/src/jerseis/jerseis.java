@@ -1,3 +1,5 @@
+package jerseis;
+
 public class jerseis extends Thread{
     cestos c;
 
@@ -16,7 +18,7 @@ public class jerseis extends Thread{
             }
             System.out.println(Thread.currentThread().getName()+" echo");
         } else if (c.getMangas()<2 & c.getCuerpos()==0) {
-            System.out.println(Thread.currentThread().getName()+" no hay suficientes mangas o cuerpos cuficientes");
+            System.out.println(Thread.currentThread().getName()+" no hay suficientes jerseis.mangas o jerseis.cuerpos cuficientes");
         }
     }
 }

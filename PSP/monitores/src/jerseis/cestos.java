@@ -1,3 +1,5 @@
+package jerseis;
+
 public class cestos {
     private int mangas;
     private int cuerpos;
