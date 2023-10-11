@@ -1,3 +1,6 @@
+import Coches.Bajar;
+import Coches.Puente;
+import Coches.Subir;
 import cuenta.Ahorrar;
 import cuenta.cuenta;
 import cuenta.Gastar;
@@ -49,7 +52,7 @@ public class Main {
 
         c.saldoFinal();*/
 
-        Personas personas[]=new Personas[50];
+        /*Personas personas[]=new Personas[50];
         Museo m=new Museo(20,0);
         for (int i = 0; i<50; i++){
             personas[i] = new Personas(m);
@@ -63,8 +66,18 @@ public class Main {
         }
         t1.start();
         t2.start();
-        t3.start();
+        t3.start();*/
+        Puente p = new Puente(0,0);
+        Subir s[]=new Subir[10];
+        for (int i = 0; i < 10; i++) {
+            s[i]= new Subir(p);
+            s[i].start();
+            s[i].setName("coche"+i);
+        }
 
+        Bajar b=new Bajar(p);
+        b.setName("bajar");
+        b.start();
 
     }
 }
