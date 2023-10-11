@@ -1,6 +1,10 @@
 import cuenta.Ahorrar;
 import cuenta.cuenta;
 import cuenta.Gastar;
+import museo.Museo;
+import museo.Personas;
+import museo.Temperatura;
+
 // Press Shift twice to open the Search Everywhere dialog and type `show whitespaces`,
 // then press Enter. You can now see whitespace characters in your code.
 public class Main {
@@ -27,7 +31,7 @@ public class Main {
         j1.start();
         j1.setName("jersei 2");*/
 
-        cuenta c = new cuenta(250);
+        /*cuenta c = new cuenta(250);
         Ahorrar a1= new Ahorrar(c);
         Ahorrar a2 = new Ahorrar(c);
         Gastar g1=new Gastar(c);
@@ -43,7 +47,24 @@ public class Main {
         g1.join();
         g2.join();
 
-        c.saldoFinal();
+        c.saldoFinal();*/
+
+        Personas personas[]=new Personas[50];
+        Museo m=new Museo(20,0);
+        for (int i = 0; i<50; i++){
+            personas[i] = new Personas(m);
+        }
+        Temperatura t1=new Temperatura(m);
+        Temperatura t2=new Temperatura(m);
+        Temperatura t3=new Temperatura(m);
+
+        for (int i = 0; i< 50; i++){
+            personas[i].start();
+        }
+        t1.start();
+        t2.start();
+        t3.start();
+
 
     }
 }

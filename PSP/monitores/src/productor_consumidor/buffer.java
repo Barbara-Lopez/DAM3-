@@ -15,7 +15,7 @@ public class buffer {
             wait();
         }
 
-        cant= (Integer)(Math.random() * (100- 1 + 1) + 1);
+        cant= (int) Math.random();
         notifyAll();
     }
     public synchronized void consumidor() throws InterruptedException {
@@ -27,5 +27,4 @@ public class buffer {
         cant = 0;
         notifyAll();
     }
-    productor
 }
