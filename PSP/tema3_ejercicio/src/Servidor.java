@@ -1,21 +1,24 @@
+
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
 public class Servidor {
+     static Integer cont=0;
     public static void main(String[] args) throws IOException {
 
-        ServerSocket servidor = new ServerSocket(3333);
-        Socket cliente = servidor.accept();
-        System.out.println("Conexión establecida");
+            ServerSocket skServidor = new ServerSocket(4999);
 
-        InputStream inp=cliente.getInputStream();
-        OutputStream out=cliente.getOutputStream();
-        inp.read();
+            while(true) {
+                Socket skCliente = skServidor.accept();// peticion del usuario
+
+                cont++;
+                HiloServidor h = new HiloServidor(skCliente, cont);
+                h.start();
 
 
-
+            }
     }
+
 }
+
