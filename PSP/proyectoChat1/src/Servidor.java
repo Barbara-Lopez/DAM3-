@@ -4,13 +4,13 @@ import java.awt.*;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
 public class Servidor  {
 
     public static void main(String[] args) {
-        // TODO Auto-generated method stub
 
         MarcoServidor mimarco=new MarcoServidor();
 
@@ -32,7 +32,7 @@ class MarcoServidor extends JFrame implements Runnable{
         areatexto=new JTextArea();
 
         milamina.add(areatexto,BorderLayout.CENTER);
-        milamina.setEnabled(false);
+        areatexto.setEnabled(false);
         add(milamina);
 
         setVisible(true);
@@ -57,7 +57,10 @@ class MarcoServidor extends JFrame implements Runnable{
                 //DataInputStream flujoEntrada=new DataInputStream(cliente.getInputStream());
                 //String mensaje=flujoEntrada.readUTF();
                 areatexto.append("\n"+m.getNombre()+": "+m.getTexto());
-
+                Socket destinatario = new Socket(m.getIp(),9090);
+                ObjectOutputStream mensajeReenvio= new ObjectOutputStream(destinatario.getOutputStream());
+                mensajeReenvio.writeObject(m);
+                destinatario.close();
                 cliente.close();
             }
         } catch (IOException | ClassNotFoundException e) {

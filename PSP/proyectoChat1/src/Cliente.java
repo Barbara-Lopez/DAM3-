@@ -5,14 +5,16 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Objects;
 
 
 public class Cliente {
 
     public static void main(String[] args) {
-        // TODO Auto-generated method stub
 
         MarcoCliente mimarco=new MarcoCliente();
 
@@ -38,7 +40,7 @@ class MarcoCliente extends JFrame{
 
 }
 
-class LaminaMarcoCliente extends JPanel{
+class LaminaMarcoCliente extends JPanel implements Runnable{
 
     public LaminaMarcoCliente(){
         nombre=new JTextField(5);
@@ -64,8 +66,35 @@ class LaminaMarcoCliente extends JPanel{
         miboton.addActionListener(buttonEvent);
         add(miboton);
 
-
+        Thread hiloCliente =new Thread(this);
+        hiloCliente.start();
     }
+
+    @Override
+    public void run() {
+        try{
+            ServerSocket servidorClient=new ServerSocket(9090);
+            Socket cliente;
+            Mensaje mensajeRecibido;
+            while(true){
+                cliente =servidorClient.accept();
+                ObjectInputStream objetoEntrada=new ObjectInputStream(cliente.getInputStream());
+                mensajeRecibido= (Mensaje) objetoEntrada.readObject();
+
+                //DataInputStream flujoEntrada=new DataInputStream(cliente.getInputStream());
+                //String mensaje=flujoEntrada.readUTF();
+                if(Objects.equals(nombre.getText(), mensajeRecibido.getNombre())) {
+                    campoChat.append("\nYo: " + mensajeRecibido.getTexto());
+                }else{
+                    campoChat.append("\n" + mensajeRecibido.getNombre() + ": " + mensajeRecibido.getTexto());
+                }
+            }
+
+        }catch(Exception e){
+            System.out.println(e.getMessage());
+        }
+    }
+
     private class EnviarTexto implements ActionListener{
 
         @Override
