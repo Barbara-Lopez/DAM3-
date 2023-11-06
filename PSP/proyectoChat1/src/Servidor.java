@@ -1,12 +1,10 @@
 import javax.swing.*;
 
 import java.awt.*;
-import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.ServerSocket;
-import java.net.Socket;
+import java.net.*;
 
 public class Servidor  {
 
@@ -49,6 +47,10 @@ class MarcoServidor extends JFrame implements Runnable{
         try {
             ServerSocket servidor=new ServerSocket(9999);
             Mensaje m;
+            MulticastSocket ms = new MulticastSocket();
+            int puerto = 12345;
+            InetAddress grupo = InetAddress.getByName("225.0.0.1");//Grupo
+            String texto="";
             while(true){
                 Socket cliente =servidor.accept();
                 ObjectInputStream objetoEntrada=new ObjectInputStream(cliente.getInputStream());
@@ -57,11 +59,17 @@ class MarcoServidor extends JFrame implements Runnable{
                 //DataInputStream flujoEntrada=new DataInputStream(cliente.getInputStream());
                 //String mensaje=flujoEntrada.readUTF();
                 areatexto.append("\n"+m.getNombre()+": "+m.getTexto());
-                Socket destinatario = new Socket(m.getIp(),9090);
+                /*Socket destinatario = new Socket(m.getIp(),4444);
                 ObjectOutputStream mensajeReenvio= new ObjectOutputStream(destinatario.getOutputStream());
                 mensajeReenvio.writeObject(m);
-                destinatario.close();
-                cliente.close();
+                destinatario.close();*/
+
+                texto=m.getNombre()+" "+m.getTexto();
+                DatagramPacket paquete = new DatagramPacket(texto.getBytes(), texto.length(),
+                        grupo, puerto);
+                ms.send(paquete);
+                //ms.close();
+                //cliente.close();
             }
         } catch (IOException | ClassNotFoundException e) {
             throw new RuntimeException(e);
