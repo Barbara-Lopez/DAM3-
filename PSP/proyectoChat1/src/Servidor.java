@@ -30,7 +30,7 @@ class MarcoServidor extends JFrame implements Runnable{
         areatexto=new JTextArea();
 
         milamina.add(areatexto,BorderLayout.CENTER);
-        areatexto.setEnabled(false);
+        areatexto.setEditable(false);
         add(milamina);
 
         setVisible(true);

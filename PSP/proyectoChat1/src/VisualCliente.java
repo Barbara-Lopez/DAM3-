@@ -1,4 +1,5 @@
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -27,7 +28,8 @@ class VisualCliente extends JPanel implements Runnable{
         add(ip);
 
         campoChat = new JTextArea(12,20);
-        campoChat.setEnabled(false);
+        campoChat.setEditable(false);
+        campoChat.setBackground(Color.white);
         add(campoChat);
         campo1=new JTextField(20);
 
@@ -103,21 +105,22 @@ class VisualCliente extends JPanel implements Runnable{
         public void actionPerformed(ActionEvent e) {
             //System.out.println(campo1.getText());
             try {
-                Socket cliente = new Socket("localhost",9999);
-                Mensaje mensaje = new Mensaje();
-                mensaje.setNombre(nombre.getText());
-                mensaje.setIp(ip.getText());
-                mensaje.setTexto(campo1.getText());
+                if(!campo1.getText().isEmpty()) {
+                    Socket cliente = new Socket("localhost", 9999);
+                    Mensaje mensaje = new Mensaje();
+                    mensaje.setNombre(nombre.getText());
+                    mensaje.setIp(ip.getText());
+                    mensaje.setTexto(campo1.getText());
 
-                ObjectOutputStream objetoSalida=new ObjectOutputStream(cliente.getOutputStream());
-                objetoSalida.writeObject(mensaje);
-                objetoSalida.close();
+                    ObjectOutputStream objetoSalida = new ObjectOutputStream(cliente.getOutputStream());
+                    objetoSalida.writeObject(mensaje);
+                    objetoSalida.close();
 
-                //DataOutputStream flujoSalida=new DataOutputStream(cliente.getOutputStream());
-                //flujoSalida.writeUTF(campo1.getText());
-                //flujoSalida.close();
+                    //DataOutputStream flujoSalida=new DataOutputStream(cliente.getOutputStream());
+                    //flujoSalida.writeUTF(campo1.getText());
+                    //flujoSalida.close();
 
-
+                }
             } catch (IOException ex) {
                 throw new RuntimeException(ex.getMessage());
             }
