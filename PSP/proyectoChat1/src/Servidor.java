@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.*;
+import java.util.Objects;
 
 public class Servidor  {
 
@@ -48,8 +49,8 @@ class MarcoServidor extends JFrame implements Runnable{
             ServerSocket servidor=new ServerSocket(9999);
             Mensaje m;
             MulticastSocket ms = new MulticastSocket();
-            int puerto = 12345;
-            InetAddress grupo = InetAddress.getByName("225.0.0.1");//Grupo
+            int puerto;
+            InetAddress grupo;//Grupo
             String texto="";
             while(true){
                 Socket cliente =servidor.accept();
@@ -59,6 +60,13 @@ class MarcoServidor extends JFrame implements Runnable{
                 //DataInputStream flujoEntrada=new DataInputStream(cliente.getInputStream());
                 //String mensaje=flujoEntrada.readUTF();
                 areatexto.append("\n"+m.getNombre()+": "+m.getTexto());
+                if(Objects.equals(m.getIp(), "Grupo1")){
+                    puerto = 12345;
+                    grupo = InetAddress.getByName("225.0.0.1");
+                }else{
+                    grupo = InetAddress.getByName("225.0.0.2");
+                    puerto = 12344;
+                }
                 /*Socket destinatario = new Socket(m.getIp(),4444);
                 ObjectOutputStream mensajeReenvio= new ObjectOutputStream(destinatario.getOutputStream());
                 mensajeReenvio.writeObject(m);
