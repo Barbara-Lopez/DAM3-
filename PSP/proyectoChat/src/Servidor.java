@@ -85,7 +85,7 @@ class ContenidoServer extends JPanel implements Runnable{
                 mensajeReenvio.writeObject(m);
                 destinatario.close();*/
 
-                texto=m.getNombre()+":"+m.getTexto();
+                texto=m.getNombre()+"/"+m.getTexto();
                 DatagramPacket paquete = new DatagramPacket(texto.getBytes(), texto.length(),
                         grupo, puerto);
                 ms.send(paquete);

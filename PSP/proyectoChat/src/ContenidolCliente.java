@@ -90,7 +90,7 @@ class ContenidolCliente extends JPanel implements Runnable{
                     DatagramPacket paquete = new DatagramPacket(buf, buf.length);
                     escucha.receive(paquete);
                     msg = new String(paquete.getData());
-                    String[] parts = msg.split(":");
+                    String[] parts = msg.split("/");
                     String part1 = parts[0]; // 123
                     String part2 = parts[1];
                     if(Objects.equals(part1, nombre.getText())){
