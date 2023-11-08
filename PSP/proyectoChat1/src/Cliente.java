@@ -13,11 +13,13 @@ import java.util.Objects;
 public class Cliente {
 
     public static void main(String[] args) {
+        Grupo selecionarGrupo = new Grupo();
 
-        MarcoCliente mimarco=new MarcoCliente();
+        if(!selecionarGrupo.isActive()) {
+            MarcoCliente mimarco = new MarcoCliente();
 
-        mimarco.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
+            mimarco.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        }
     }
 
 }
