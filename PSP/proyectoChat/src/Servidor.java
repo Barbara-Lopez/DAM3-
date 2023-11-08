@@ -18,27 +18,39 @@ public class Servidor  {
     }
 }
 
-class MarcoServidor extends JFrame implements Runnable{
+class MarcoServidor extends JFrame {
 
     public MarcoServidor(){
-
         setBounds(1200,300,280,350);
+        ContenidoServer server=new ContenidoServer();
 
-        JPanel milamina= new JPanel();
-
-        milamina.setLayout(new BorderLayout());
-
-        areatexto=new JTextArea();
-
-        milamina.add(areatexto,BorderLayout.CENTER);
-        areatexto.setEditable(false);
-        add(milamina);
+        add(server);
 
         setVisible(true);
+
+
+
+
+    }
+
+
+
+}
+class ContenidoServer extends JPanel implements Runnable{
+    public ContenidoServer() {
+
+        JLabel texto=new JLabel("-Server CHAT-");
+        add(texto);
+
+
+        areatexto = new JTextArea(17,22);
+        areatexto.setEditable(false);
+        areatexto.setBackground(Color.white);
+        add(areatexto);
+
         Thread hiloServer =new Thread(this);
         hiloServer.start();
     }
-
     private	JTextArea areatexto;
 
     @Override
@@ -49,8 +61,8 @@ class MarcoServidor extends JFrame implements Runnable{
             ServerSocket servidor=new ServerSocket(9999);
             Mensaje m;
             MulticastSocket ms = new MulticastSocket();
-            int puerto;
-            InetAddress grupo;//Grupo
+            int puerto = 0;
+            InetAddress grupo = null;//Grupo
             String texto="";
             while(true){
                 Socket cliente =servidor.accept();
@@ -59,11 +71,12 @@ class MarcoServidor extends JFrame implements Runnable{
 
                 //DataInputStream flujoEntrada=new DataInputStream(cliente.getInputStream());
                 //String mensaje=flujoEntrada.readUTF();
-                areatexto.append("\n"+m.getNombre()+": "+m.getTexto());
+                areatexto.append("\n"+m.getNombre()+": "+m.getTexto()+", "+m.getIp());
                 if(Objects.equals(m.getIp(), "Grupo1")){
+                    System.out.println("Estoy en el grupo1");
                     puerto = 12345;
                     grupo = InetAddress.getByName("225.0.0.1");
-                }else{
+                }else if(Objects.equals(m.getIp(), "Grupo2")){
                     grupo = InetAddress.getByName("225.0.0.2");
                     puerto = 12344;
                 }
@@ -72,7 +85,7 @@ class MarcoServidor extends JFrame implements Runnable{
                 mensajeReenvio.writeObject(m);
                 destinatario.close();*/
 
-                texto=m.getNombre()+" "+m.getTexto();
+                texto=m.getNombre()+":"+m.getTexto();
                 DatagramPacket paquete = new DatagramPacket(texto.getBytes(), texto.length(),
                         grupo, puerto);
                 ms.send(paquete);
@@ -84,4 +97,5 @@ class MarcoServidor extends JFrame implements Runnable{
         }
 
     }
+
 }

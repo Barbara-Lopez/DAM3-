@@ -5,12 +5,11 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.*;
 import java.util.Objects;
 
-class VisualCliente extends JPanel implements Runnable{
+class ContenidoCliente extends JPanel implements Runnable{
     private MulticastSocket escucha;
     private InetAddress dirIP ;
     private InetSocketAddress grupo;
@@ -20,7 +19,7 @@ class VisualCliente extends JPanel implements Runnable{
     private JTextArea campoChat;
     private JButton miboton;
     private JComboBox listaDesplegable;
-    public VisualCliente(){
+    public ContenidoCliente(){
         nombre=new JTextField(5);
         nombre.setText("Nombre");
         nombre.selectAll();

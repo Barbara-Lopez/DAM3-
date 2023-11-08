@@ -14,9 +14,9 @@ public class Cliente {
 
     public static void main(String[] args) {
 
-        MarcoCliente mimarco=new MarcoCliente();
+        Grupo miVentana=new Grupo();
 
-        mimarco.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        miVentana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
     }
 

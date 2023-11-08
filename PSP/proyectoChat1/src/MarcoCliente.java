@@ -6,9 +6,9 @@ class MarcoCliente extends JFrame {
 
         setBounds(600,300,280,350);
 
-        VisualCliente milamina=new VisualCliente();
+        ContenidoCliente cliente=new ContenidoCliente();
 
-        add(milamina);
+        add(cliente);
 
         setVisible(true);
     }
