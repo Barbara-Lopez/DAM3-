@@ -48,7 +48,10 @@ class ContenidoGrupo extends JPanel {
 
     }
     private class CambiarGrupo implements ItemListener {
-
+        /**
+         *
+         * @param e cambiar de color el desplegable cuando seleccionas algo que no sea la opcion uno que está en blanco
+         */
         public void itemStateChanged(ItemEvent e) {
             if(listaDesplegable.getSelectedIndex()!=0){
                 listaDesplegable.setBackground(Color.white);
@@ -56,7 +59,10 @@ class ContenidoGrupo extends JPanel {
         }
     }
     private class EnviarTexto implements ActionListener {
-
+        /**
+         * 
+         * @param e the event to be processed
+         */
         @Override
         public void actionPerformed(ActionEvent e) {
             //System.out.println(campo1.getText());

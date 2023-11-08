@@ -53,10 +53,12 @@ class ContenidoServer extends JPanel implements Runnable{
     }
     private	JTextArea areatexto;
 
+    /**
+     * El run del serc¡vidor es para que pueda
+     */
     @Override
-    public void run() {
+   public void run() {
         //System.out.println("hola");
-
         try {
             ServerSocket servidor=new ServerSocket(9999);
             Mensaje m;
