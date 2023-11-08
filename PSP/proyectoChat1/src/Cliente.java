@@ -14,12 +14,8 @@ public class Cliente {
 
     public static void main(String[] args) {
         Grupo selecionarGrupo = new Grupo();
+        selecionarGrupo.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        if(!selecionarGrupo.isActive()) {
-            MarcoCliente mimarco = new MarcoCliente();
-
-            mimarco.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        }
     }
 
 }
