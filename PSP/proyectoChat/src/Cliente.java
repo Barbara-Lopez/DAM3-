@@ -11,7 +11,10 @@ import java.util.Objects;
 
 
 public class Cliente {
-
+    /**
+     *
+     * @param args
+     */
     public static void main(String[] args) {
 
         Grupo miVentana=new Grupo();
