@@ -2,8 +2,17 @@ import java.io.Serializable;
 
 public class Mensaje implements Serializable {
 
+    /**
+     * nombre de quien envia el mensaje
+      */
     private String nombre;
+    /**
+     * nombre de a que ip se conectara para recibir informacion
+     */
     private String ip;
+    /**
+     * texto del mensaje
+      */
     private String texto;
 
     public Mensaje() {
@@ -23,7 +32,7 @@ public class Mensaje implements Serializable {
 
     /**
      *
-     * @return retorna el nombre
+     * @return retorna el nombre de la persona que envia el mensaje
      */
     public String getNombre() {
         return nombre;

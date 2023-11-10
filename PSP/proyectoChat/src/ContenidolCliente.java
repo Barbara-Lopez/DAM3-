@@ -17,6 +17,12 @@ class ContenidolCliente extends JPanel implements Runnable{
     private JButton miboton;
     private static JComboBox listaDesplegable;
     private static String nombreGrupo;
+
+    /**
+     *
+     * @param g el nombre del grupo al que se une el cliente
+     * @throws IOException
+     */
     public ContenidolCliente(String g) throws IOException {
         if(Objects.equals(g, "Grupo1")){
             nombreGrupo = g;
@@ -70,7 +76,9 @@ class ContenidolCliente extends JPanel implements Runnable{
         EnviarTexto buttonEvent= new EnviarTexto();
         miboton.addActionListener(buttonEvent);
         add(miboton);
-
+        /**
+         * iniciar el hilo del cliente, se encarga de recibir cada mensaje
+         */
         Thread hiloCliente = new Thread(this);
         hiloCliente.start();
 
@@ -131,7 +139,10 @@ class ContenidolCliente extends JPanel implements Runnable{
     }
 
     private class EnviarTexto implements ActionListener {
-
+        /**
+         *
+         * @param e la acción que hace el boton enviar, envia la clase mensajev al servidor
+         */
         @Override
         public void actionPerformed(ActionEvent e) {
             //System.out.println(campo1.getText());

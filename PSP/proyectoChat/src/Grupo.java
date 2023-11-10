@@ -61,7 +61,7 @@ class ContenidoGrupo extends JPanel {
     private class EnviarTexto implements ActionListener {
         /**
          * 
-         * @param e the event to be processed
+         * @param e se encarga de enviar el nombre del grupo al que se quiere unira la interfaz grafica del chat
          */
         @Override
         public void actionPerformed(ActionEvent e) {
