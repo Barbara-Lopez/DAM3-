@@ -54,7 +54,7 @@ class ContenidoServer extends JPanel implements Runnable{
     private	JTextArea areatexto;
 
     /**
-     * El run del serc¡vidor es para que pueda
+     * El run del servidor es para que pueda
      */
     @Override
    public void run() {

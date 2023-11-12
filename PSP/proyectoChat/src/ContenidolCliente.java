@@ -10,6 +10,7 @@ class ContenidolCliente extends JPanel implements Runnable{
     private static MulticastSocket escucha;
     private static InetAddress dirIP ;
     private static InetSocketAddress grupo;
+    private static NetworkInterface red;
     private JTextField campo1;
     private JTextField nombre;
     private JTextField ip;
@@ -29,7 +30,7 @@ class ContenidolCliente extends JPanel implements Runnable{
             escucha = new MulticastSocket(12345);
             dirIP = InetAddress.getByName("225.0.0.1");
             grupo = new InetSocketAddress(dirIP, 12345);
-            NetworkInterface red = NetworkInterface.getByName("localhost");
+            red = NetworkInterface.getByName("localhost");
             escucha.joinGroup(grupo, red);
             System.out.println("Conectado a: "+escucha+" "+dirIP+" "+grupo+" "+escucha);
 
@@ -38,7 +39,7 @@ class ContenidolCliente extends JPanel implements Runnable{
             escucha = new MulticastSocket(12344);
             dirIP = InetAddress.getByName("225.0.0.2");
             grupo = new InetSocketAddress(dirIP, 12344);
-            NetworkInterface red = NetworkInterface.getByName("localhost");
+            red = NetworkInterface.getByName("localhost");
             escucha.joinGroup(grupo, red);
             System.out.println("Conectado a: "+escucha+" "+dirIP+" "+grupo+" "+escucha);
         }
@@ -100,17 +101,27 @@ class ContenidolCliente extends JPanel implements Runnable{
                     msg = new String(paquete.getData());
                     String[] parts = msg.split("/");
                     String part1 = parts[0]; // 123
-                    String part2 = parts[1];
+                    String part2 = parts[1].trim();
+                    if(Objects.equals(part1, nombre.getText()) && part2.equalsIgnoreCase("adios")){
+                        break;
+                    }
                     if(Objects.equals(part1, nombre.getText())){
                         campoChat.append("\n Yo: " + part2);
-                        System.out.println("\n "+ msg.trim());
+                        System.out.println("\n Yo: " + part2);
                     }else{
-                        campoChat.append("\n " + part1 + ": " + part2);
-                        System.out.println("\n " + part1 + ": " + part2);
+                        if(part2.equalsIgnoreCase("adios")){
+                            campoChat.append("\n " + part1 + ": Dice adios y sale del grupo");
+                            System.out.println("\n " + part1 + ": " + part2);
+                        }else{
+                            campoChat.append("\n " + part1 + ": " + part2);
+                            System.out.println("\n " + part1 + ": " + part2);
+                        }
                     }
+                    buf = new byte[1000];
                 }
-                //escucha.leaveGroup(grupo,red);//Abandonamos el grupo
-                //escucha.close();
+                escucha.leaveGroup(grupo,red);//Abandonamos el grupo
+                escucha.close();
+                System.exit(0);
                 /*ServerSocket servidorClient=new ServerSocket(4444);
                 Socket cliente;
                 Mensaje mensajeRecibido;
@@ -147,12 +158,23 @@ class ContenidolCliente extends JPanel implements Runnable{
         public void actionPerformed(ActionEvent e) {
             //System.out.println(campo1.getText());
             try {
-                if(!campo1.getText().isEmpty()) {
+                if(Objects.equals(nombre.getText(), "Nombre") || nombre.getText().isEmpty()){
+                    nombre.setBackground(Color.red);
+                }else{
+                    if(nombre.getBackground()==Color.red){
+                        nombre.setBackground(Color.white);
+                    }
+                }
+                if(!campo1.getText().isEmpty() && !Objects.equals(nombre.getText(), "Nombre") && !nombre.getText().isEmpty()) {
+                    if(nombre.isEditable()){
+                        nombre.setEditable(false);
+                    }
                     Socket cliente = new Socket("localhost", 9999);
                     Mensaje mensaje = new Mensaje();
                     mensaje.setNombre(nombre.getText());
                     mensaje.setIp((String) listaDesplegable.getSelectedItem());
                     mensaje.setTexto(campo1.getText());
+                    campo1.setText("");
 
                     ObjectOutputStream objetoSalida = new ObjectOutputStream(cliente.getOutputStream());
                     objetoSalida.writeObject(mensaje);

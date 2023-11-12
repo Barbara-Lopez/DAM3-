@@ -41,7 +41,7 @@ class ContenidoGrupo extends JPanel {
         CambiarGrupo desplegableEvent = new CambiarGrupo();
         listaDesplegable.addItemListener(desplegableEvent);
         add(listaDesplegable);
-        JButton miboton = new JButton("Enviar");
+        JButton miboton = new JButton("Unirse");
         EnviarTexto buttonEvent = new EnviarTexto();
         miboton.addActionListener(buttonEvent);
         add(miboton);

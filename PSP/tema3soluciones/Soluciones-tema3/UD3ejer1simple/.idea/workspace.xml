@@ -2,13 +2,22 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d85ea64a-28be-46dc-85ad-723ab15fbe1a" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/../../../tema3_ejercicio/src/Cliente1.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../../tema3_ejercicio/src/Cliente2.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../../tema3_ejercicio/src/HiloServidor.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../../udp/src/Recibir.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../../Acceso a datos/Actividad1/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../../../Acceso a datos/Actividad1/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../tema3_ejercicio/src/Cliente.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../../tema3_ejercicio/src/Cliente.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../tema3_ejercicio/src/Servidor.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../../tema3_ejercicio/src/Servidor.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../UD3ejer4/.idea/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../UD3ejer4/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../proyectoChat/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../../proyectoChat/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../proyectoChat/Explicación.md" beforeDir="false" afterPath="$PROJECT_DIR$/../../../proyectoChat/Explicación.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../proyectoChat/out/production/proyectoChat/Cliente.class" beforeDir="false" afterPath="$PROJECT_DIR$/../../../proyectoChat/out/production/proyectoChat/Cliente.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../proyectoChat/out/production/proyectoChat/ContenidoGrupo$CambiarGrupo.class" beforeDir="false" afterPath="$PROJECT_DIR$/../../../proyectoChat/out/production/proyectoChat/ContenidoGrupo$CambiarGrupo.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../proyectoChat/out/production/proyectoChat/ContenidoGrupo$EnviarTexto.class" beforeDir="false" afterPath="$PROJECT_DIR$/../../../proyectoChat/out/production/proyectoChat/ContenidoGrupo$EnviarTexto.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../proyectoChat/out/production/proyectoChat/ContenidolCliente$EnviarTexto.class" beforeDir="false" afterPath="$PROJECT_DIR$/../../../proyectoChat/out/production/proyectoChat/ContenidolCliente$EnviarTexto.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../proyectoChat/out/production/proyectoChat/ContenidolCliente.class" beforeDir="false" afterPath="$PROJECT_DIR$/../../../proyectoChat/out/production/proyectoChat/ContenidolCliente.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../proyectoChat/out/production/proyectoChat/MarcoCliente.class" beforeDir="false" afterPath="$PROJECT_DIR$/../../../proyectoChat/out/production/proyectoChat/MarcoCliente.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../proyectoChat/out/production/proyectoChat/Mensaje.class" beforeDir="false" afterPath="$PROJECT_DIR$/../../../proyectoChat/out/production/proyectoChat/Mensaje.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../proyectoChat/src/ContenidolCliente.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../../proyectoChat/src/ContenidolCliente.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../proyectoChat/src/Servidor.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../../proyectoChat/src/Servidor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../tema3_ejercicio/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../../tema3_ejercicio/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -18,24 +27,24 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../../../.." />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 0
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 0
+}</component>
   <component name="ProjectId" id="2XGcyBSK4b6DvaeTaEASLa8jzlY" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "git-widget-placeholder": "main",
-    "last_opened_file_path": "C:/Users/9fdam03/Desktop/DAM_3/PSP/tema3soluciones/Soluciones-tema3/UD3ejer1simple",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/LENOVO/Desktop/Clase/DAM_3/PSP/tema3soluciones/Soluciones-tema3/UD3ejer4&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -45,6 +54,9 @@
       <option name="presentableId" value="Default" />
       <updated>1698259108694</updated>
       <workItem from="1698259109705" duration="38000" />
+      <workItem from="1699803680915" duration="14000" />
+      <workItem from="1699804017913" duration="16000" />
+      <workItem from="1699804056622" duration="37000" />
     </task>
     <servers />
   </component>
