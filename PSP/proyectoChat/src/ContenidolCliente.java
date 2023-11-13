@@ -110,7 +110,7 @@ class ContenidolCliente extends JPanel implements Runnable{
                         System.out.println("\n Yo: " + part2);
                     }else{
                         if(part2.equalsIgnoreCase("adios")){
-                            campoChat.append("\n " + part1 + ": Dice adios y sale del grupo");
+                            campoChat.append("\n " + part1 + ": Dice adios y sale del chat");
                             System.out.println("\n " + part1 + ": " + part2);
                         }else{
                             campoChat.append("\n " + part1 + ": " + part2);
