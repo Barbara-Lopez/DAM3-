@@ -13,4 +13,3 @@ que te has unido.
 - Luego esta donde tu escribes y abajo de el el botón de enviar. Una vez clicas en el si no hay nada no se envia y 
 si hay algún problema con el nombre(los anteriores mencionados) tampoco.
 - Si escribes _adios_ independientemente de si esta en mayusculas o minusculas saldras de la app del chat
-![image](https://github.com/Barbara-Lopez/DAM_3/assets/73885464/af2e72ed-6c9f-4537-85b2-51f10e4e9456)
