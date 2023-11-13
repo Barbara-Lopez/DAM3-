@@ -27,10 +27,6 @@ class MarcoServidor extends JFrame {
         add(server);
 
         setVisible(true);
-
-
-
-
     }
 
 
@@ -75,10 +71,11 @@ class ContenidoServer extends JPanel implements Runnable{
                 //String mensaje=flujoEntrada.readUTF();
                 areatexto.append("\n"+m.getNombre()+": "+m.getTexto()+", "+m.getIp());
                 if(Objects.equals(m.getIp(), "Grupo1")){
-                    System.out.println("Estoy en el grupo1");
+                    System.out.println("\n"+m.getNombre()+": "+m.getTexto()+", "+m.getIp());
                     puerto = 12345;
                     grupo = InetAddress.getByName("225.0.0.1");
                 }else if(Objects.equals(m.getIp(), "Grupo2")){
+                    System.out.println("\n"+m.getNombre()+": "+m.getTexto()+", "+m.getIp());
                     grupo = InetAddress.getByName("225.0.0.2");
                     puerto = 12344;
                 }
@@ -87,7 +84,7 @@ class ContenidoServer extends JPanel implements Runnable{
                 mensajeReenvio.writeObject(m);
                 destinatario.close();*/
 
-                texto=m.getNombre()+"/"+m.getTexto();
+                texto=m.getNombre()+"::"+m.getTexto();
                 DatagramPacket paquete = new DatagramPacket(texto.getBytes(), texto.length(),
                         grupo, puerto);
                 ms.send(paquete);

@@ -13,7 +13,7 @@ class ContenidolCliente extends JPanel implements Runnable{
     private static NetworkInterface red;
     private JTextField campo1;
     private JTextField nombre;
-    private JTextField ip;
+    //private JTextField ip;
     private JTextArea campoChat;
     private JButton miboton;
     private static JComboBox listaDesplegable;
@@ -78,14 +78,10 @@ class ContenidolCliente extends JPanel implements Runnable{
         miboton.addActionListener(buttonEvent);
         add(miboton);
         /**
-         * iniciar el hilo del cliente, se encarga de recibir cada mensaje
+         * iniciar el hilo del cliente, se encarga de recibir cada mensaje. Escribir adios para salir
          */
         Thread hiloCliente = new Thread(this);
         hiloCliente.start();
-
-    }
-
-    public static void setConexion(String g) throws IOException {
 
     }
 
@@ -99,7 +95,7 @@ class ContenidolCliente extends JPanel implements Runnable{
                     DatagramPacket paquete = new DatagramPacket(buf, buf.length);
                     escucha.receive(paquete);
                     msg = new String(paquete.getData());
-                    String[] parts = msg.split("/");
+                    String[] parts = msg.split("::");
                     String part1 = parts[0]; // 123
                     String part2 = parts[1].trim();
                     if(Objects.equals(part1, nombre.getText()) && part2.equalsIgnoreCase("adios")){
@@ -152,7 +148,7 @@ class ContenidolCliente extends JPanel implements Runnable{
     private class EnviarTexto implements ActionListener {
         /**
          *
-         * @param e la acción que hace el boton enviar, envia la clase mensajev al servidor
+         * @param e la acción que hace el boton enviar, envia la clase mensaje al servidor
          */
         @Override
         public void actionPerformed(ActionEvent e) {
