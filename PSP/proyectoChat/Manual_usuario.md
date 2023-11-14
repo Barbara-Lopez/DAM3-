@@ -13,4 +13,6 @@ que te has unido.
 - Luego esta donde tu escribes y abajo de el el botón de enviar. Una vez clicas en el si no hay nada no se envia y 
 si hay algún problema con el nombre(los anteriores mencionados) tampoco.
 - Si escribes _adios_ independientemente de si esta en mayusculas o minusculas saldras de la app del chat.
+
+- El servidor solo hay que ejecutarlo para que se puedan conectar los clientes.
  
