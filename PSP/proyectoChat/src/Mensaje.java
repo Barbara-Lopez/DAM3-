@@ -1,5 +1,8 @@
 import java.io.Serializable;
 
+/**
+ *  Objeto que mando desde el cliente al servidor
+ */
 public class Mensaje implements Serializable {
 
     /**
@@ -15,14 +18,17 @@ public class Mensaje implements Serializable {
       */
     private String texto;
 
+    /**
+     * Inicializar el objeto mensage vacío
+     */
     public Mensaje() {
     }
 
     /**
-     *
-     * @param nombre
-     * @param ip
-     * @param texto
+     * Inicializar el objeto mensage con toda la información
+     * @param nombre nombre de la persona que envia el mensaje
+     * @param ip a que grupo se ha unido
+     * @param texto texto que se quiere enviar
      */
     public Mensaje(String nombre, String ip, String texto) {
         this.nombre = nombre;
@@ -38,6 +44,10 @@ public class Mensaje implements Serializable {
         return nombre;
     }
 
+    /**
+     *
+     * @param nombre poner el nombre de la persona que envia el mensaje
+     */
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
@@ -50,6 +60,10 @@ public class Mensaje implements Serializable {
         return ip;
     }
 
+    /**
+     *
+     * @param ip poner el grupo al que se a unido
+     */
     public void setIp(String ip) {
         this.ip = ip;
     }
@@ -62,6 +76,10 @@ public class Mensaje implements Serializable {
         return texto;
     }
 
+    /**
+     *
+      * @param texto poner el texto que se quiere enviar
+     */
     public void setTexto(String texto) {
         this.texto = texto;
     }

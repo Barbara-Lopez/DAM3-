@@ -11,9 +11,19 @@ import java.net.MulticastSocket;
 import java.net.NetworkInterface;
 import java.util.Objects;
 
+/**
+ * Ventana para poder elegir el grupo al que se quiere unir
+ */
 public class Grupo extends JFrame {
+    /**
+     * Variable para poder coger desde la accion del boton unirse para poder inutilizar la ventana una vez elijas el grupo
+      */
     public static ContenidoGrupo milamina;
-    public Grupo() throws HeadlessException {
+
+    /**
+     *  Tamaño de la ventana y cargar el contenido de esa ventana
+     */
+    public Grupo()  {
         setBounds(600,300,280,350);
 
          milamina=new ContenidoGrupo();
@@ -61,7 +71,8 @@ class ContenidoGrupo extends JPanel {
     private class EnviarTexto implements ActionListener {
         /**
          * 
-         * @param e se encarga de enviar el nombre del grupo al que se quiere unira la interfaz grafica del chat
+         * @param e accion del boton Unirse, se encarga de enviar el nombre del grupo al que se quiere unira la
+         *          interfaz grafica del chat
          */
         @Override
         public void actionPerformed(ActionEvent e) {

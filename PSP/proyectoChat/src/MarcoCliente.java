@@ -3,7 +3,7 @@ import java.io.IOException;
 
 class MarcoCliente extends JFrame {
     /**
-     *
+     * Tamaño de la ventana y cargar el contenido de esa ventana
      * @param string en nombre del grupo al que se une el cliente
      * @throws IOException
      */

@@ -7,9 +7,17 @@ import java.io.ObjectOutputStream;
 import java.net.*;
 import java.util.Objects;
 
+/**
+ * Ventana del servidor, se encarga de coger la información y enviarla al correspondiente grupo
+ * En la ventana se puede ver todos los mensajes que se envian; nombre: mensaje, grupo
+ */
 public class Servidor  {
-
-    public static void main(String[] args) {
+    /**
+     *
+     *Crea la ventana que se tiene que visualizar.
+     *
+     */
+    public static void main() {
 
         MarcoServidor mimarco=new MarcoServidor();
 

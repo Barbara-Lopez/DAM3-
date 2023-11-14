@@ -9,13 +9,16 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Objects;
 
-
+/**
+ * La visualización de la ventana del cliente
+ *
+ */
 public class Cliente {
     /**
-     *
-     * @param args
+     * Crea la ventana que se tiene que visualizar.
+     * En este caso primero la ventana para elegir el grupo y luego la ventana para poder enviar los mensajes y recibirlos
      */
-    public static void main(String[] args) {
+    public static void main() {
 
         Grupo miVentana=new Grupo();
 

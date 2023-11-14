@@ -4,7 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="25f15023-4584-4cdb-9816-1b77c12a4154" name="Changes" comment="" />
+    <list default="true" id="25f15023-4584-4cdb-9816-1b77c12a4154" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Cliente.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Cliente.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ContenidolCliente.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ContenidolCliente.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Grupo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Grupo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/MarcoCliente.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/MarcoCliente.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Mensaje.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Mensaje.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Servidor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Servidor.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -92,6 +100,7 @@
       <workItem from="1699802371428" duration="1505000" />
       <workItem from="1699803925774" duration="4361000" />
       <workItem from="1699884350964" duration="3175000" />
+      <workItem from="1699989419487" duration="1842000" />
     </task>
     <servers />
   </component>

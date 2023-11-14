@@ -20,7 +20,7 @@ class ContenidolCliente extends JPanel implements Runnable{
     private static String nombreGrupo;
 
     /**
-     *
+     * Todo lo que está dentro la ventana
      * @param g el nombre del grupo al que se une el cliente
      * @throws IOException
      */
@@ -148,7 +148,7 @@ class ContenidolCliente extends JPanel implements Runnable{
     private class EnviarTexto implements ActionListener {
         /**
          *
-         * @param e la acción que hace el boton enviar, envia la clase mensaje al servidor
+         * @param e la acción que hace el boton enviar, envia el objeto mensaje al servidor
          */
         @Override
         public void actionPerformed(ActionEvent e) {
