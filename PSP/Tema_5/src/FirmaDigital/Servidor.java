@@ -2,13 +2,14 @@ package FirmaDigital;
 
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.security.*;
 
 public class Servidor {
-    public static void main(String[] args) throws NoSuchAlgorithmException, IOException, InvalidKeyException, SignatureException {
+    public static void main(String[] args) throws NoSuchAlgorithmException, IOException, InvalidKeyException, SignatureException, ClassNotFoundException {
 
         Socket destinatario = new Socket(InetAddress.getLocalHost(),4444);
         KeyPairGenerator keyGen = KeyPairGenerator.getInstance("DSA");
@@ -17,9 +18,12 @@ public class Servidor {
         PrivateKey clavepriv = par.getPrivate();
         PublicKey clavepub = par.getPublic();
 
-        
+        ObjectInputStream objetoEntrada2=new ObjectInputStream(destinatario.getInputStream());
+        Mensaje m= (Mensaje) objetoEntrada2.readObject();
+
         ObjectOutputStream clavePublica= new ObjectOutputStream(destinatario.getOutputStream());
         clavePublica.writeObject(clavepub);
+
         
         //FIRMA CON CLAVE PRIVADA EL MENSAJE
         //AL OBJETO Signature SE LE SUMINISTRAN LOS DATOS A FIRMAR
