@@ -8,20 +8,18 @@ public class Cliente {
     private String apellido;
     private String edad;
     private String email;
-    private String usuario;
-    private byte[] contrasena;
+    private Usuario user;
     private List<Cuenta> cuentas=new ArrayList<Cuenta>();
 
     public Cliente() {
     }
 
-    public Cliente(String nombre, String apellido, String edad, String email, String usuario, byte[] contrasena) {
+    public Cliente(String nombre, String apellido, String edad, String email, Usuario user) {
         this.nombre = nombre;
         this.apellido = apellido;
         this.edad = edad;
         this.email = email;
-        this.usuario = usuario;
-        this.contrasena = contrasena;
+        this.user = user;
     }
 
     public String getNombre() {
@@ -56,20 +54,12 @@ public class Cliente {
         this.email = email;
     }
 
-    public String getUsuario() {
-        return usuario;
+    public Usuario getUser() {
+        return user;
     }
 
-    public void setUsuario(String usuario) {
-        this.usuario = usuario;
-    }
-
-    public byte[] getContrasena() {
-        return contrasena;
-    }
-
-    public void setContrasena(byte[] contrasena) {
-        this.contrasena = contrasena;
+    public void setUser(Usuario user) {
+        this.user = user;
     }
 
     public List<Cuenta> getCuentas() {
