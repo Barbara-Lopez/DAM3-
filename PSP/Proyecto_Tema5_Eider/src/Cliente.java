@@ -3,10 +3,7 @@ import modelos.Usuario;
 import javax.crypto.Cipher;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.security.*;
 import java.util.Scanner;
 
@@ -18,6 +15,9 @@ public class Cliente {
     private static ObjectOutputStream objetoSalida;
     private static PublicKey clavepub;
     private static  Cipher rsaCipher;
+    private static Scanner lectura = new Scanner(System.in);
+    private static DataOutputStream textoSalida;
+    private static DataInputStream textoEntrada;
 
     public static void main(String[] args) {
         System.setProperty("javax.net.ssl.trustStore", "src/files/UsuarioAlmacenSSL");
@@ -37,7 +37,7 @@ public class Cliente {
             clavepub = par.getPublic();
             rsaCipher = Cipher.getInstance("RSA");
             enviarRecibirClavePub();
-            Scanner lectura = new Scanner(System.in);
+
             int op = 0;
             do {
                 try {
@@ -47,11 +47,28 @@ public class Cliente {
                         case 1: {
                             DataOutputStream op1= new DataOutputStream(cliente.getOutputStream());
                             op1.writeInt(1);
+
+                            inicioSesion();
+
+                            textoEntrada =new DataInputStream(cliente.getInputStream());
+                            Boolean inicioOk= textoEntrada.readBoolean();
+                            if(inicioOk){
+
+                            }else{
+                                System.out.println("Usuario o contraseña incorrecto");
+                            }
                             break;
                         }
                         case 2: {
                             DataOutputStream  op1= new DataOutputStream(cliente.getOutputStream());
                             op1.writeInt(2);
+                            textoEntrada =new DataInputStream(cliente.getInputStream());
+                            Boolean inicioOk= textoEntrada.readBoolean();
+                            if(inicioOk){
+
+                            }else{
+                                System.out.println("Pasó algún error a la hora de guardar los datos");
+                            }
                             break;
                         }
                         case 3: {
@@ -62,10 +79,6 @@ public class Cliente {
                         default:
                             System.out.println("Escriba un numero del 1 al 3");
                     }
-
-
-
-
 
                 } catch (NumberFormatException ex){
                     System.out.println("Tienes que escribir un numero");
@@ -87,10 +100,36 @@ public class Cliente {
         objetoSalida.writeObject(clavepub);
         //System.out.println("Clave cliente:\n"+clavepub);
     }
-    public static void inicioSesion(Usuario user) throws IOException {
+    public static void inicioSesion() throws IOException, NoSuchAlgorithmException {
+        String user;
+        while (true) {
+            try{
+                System.out.println("Escriba el usuario: ");
+                user = lectura.next();
+                break;
+            }catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+        String contrasena;
+        while (true) {
+            try{
+                System.out.println("Escriba la contraseña: ");
+                contrasena = lectura.next();
+                break;
+            }catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+        MessageDigest md = MessageDigest.getInstance("SHA");
+        md.update(contrasena.getBytes());
+        byte resumen[]=md.digest();
 
+        Usuario u=new Usuario(user,resumen);
+        objetoSalida = new ObjectOutputStream(cliente.getOutputStream());
+        objetoSalida.writeObject(u);
     }
-    public static void crearCuenta(Cliente cli) throws IOException {
+    public static void crearCuenta() throws IOException {
 
     }
 }

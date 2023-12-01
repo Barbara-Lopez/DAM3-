@@ -1,12 +1,13 @@
+import modelos.Cliente;
 import modelos.Usuario;
 
 import javax.crypto.Cipher;
 import javax.net.ssl.SSLSocket;
 import java.io.*;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.PrivateKey;
-import java.security.PublicKey;
+import java.security.*;
+import java.util.Arrays;
+import java.util.Objects;
+import modelos.*;
 
 public class Hilo extends Thread {
 
@@ -19,6 +20,8 @@ public class Hilo extends Thread {
     private static PublicKey clavepub;
     private static Integer opcion1=0;
     private static Cliente client;
+    private static DataOutputStream textoSalida;
+    private static DataInputStream textoEntrada;
     public Hilo(SSLSocket c) {
         this.cliente = c;
 
@@ -96,7 +99,37 @@ public class Hilo extends Thread {
         }
     }
     public static void inicioSesion(Usuario user) throws IOException {
+        File fichero = new File("src/files/Clientes.dat");
+        FileInputStream fileout = new FileInputStream(fichero);
+        ObjectInputStream dataIS = new ObjectInputStream(fileout);
+        Cliente c= null;
+        try {
+            while (dataIS.available() != -1 ) {
+                 client= (Cliente) dataIS.readObject();
+                if(client.getUser().getUsuario().equalsIgnoreCase(user.getUsuario())){
+                    c=client;
+                    break;
+                }
 
+            }
+        }catch (EOFException eo){} catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        dataIS.close();
+        textoSalida= new DataOutputStream(cliente.getOutputStream());
+        if(c!=null){
+            String contrasenaGuardada= Arrays.toString(c.getUser().getContrasena());
+            String contrasenaEnviada=Arrays.toString(user.getContrasena());
+            if(Objects.equals(contrasenaGuardada, contrasenaEnviada)){
+                textoSalida.writeBoolean(true);
+            }else{
+                textoSalida.writeBoolean(false);
+            }
+        }else{
+            textoSalida.writeBoolean(false);
+        }
     }
     public static void crearCuenta(Cliente cli) throws IOException {
 
