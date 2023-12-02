@@ -99,25 +99,29 @@ public class Hilo extends Thread {
         }
     }
     public static void inicioSesion(Usuario user) throws IOException {
+        FileInputStream fileout;
+        ObjectInputStream dataIS = null;
         File fichero = new File("src/files/Clientes.dat");
-        FileInputStream fileout = new FileInputStream(fichero);
-        ObjectInputStream dataIS = new ObjectInputStream(fileout);
         Cliente c= null;
         try {
+            fileout = new FileInputStream(fichero);
+            dataIS = new ObjectInputStream(fileout);
+
             while (dataIS.available() != -1 ) {
-                 client= (Cliente) dataIS.readObject();
+                client= (Cliente) dataIS.readObject();
+                System.out.println(client);
                 if(client.getUser().getUsuario().equalsIgnoreCase(user.getUsuario())){
                     c=client;
                     break;
                 }
 
             }
-        }catch (EOFException eo){} catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
+        }catch (EOFException eo){} catch (IOException | ClassNotFoundException e) {
+            System.out.println("No hay nada");
         }
-        dataIS.close();
+        if(dataIS!=null){
+            dataIS.close();
+        }
         textoSalida= new DataOutputStream(cliente.getOutputStream());
         if(c!=null){
             String contrasenaGuardada= Arrays.toString(c.getUser().getContrasena());
