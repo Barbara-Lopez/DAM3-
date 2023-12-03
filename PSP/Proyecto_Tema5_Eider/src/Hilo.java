@@ -128,6 +128,7 @@ public class Hilo extends Thread {
             String contrasenaEnviada=Arrays.toString(user.getContrasena());
             if(Objects.equals(contrasenaGuardada, contrasenaEnviada)){
                 textoSalida.writeBoolean(true);
+                client=c;
             }else{
                 textoSalida.writeBoolean(false);
             }
@@ -136,6 +137,12 @@ public class Hilo extends Thread {
         }
     }
     public static void crearCuenta(Cliente cli) throws IOException {
+        File fichero = new File("src/files/Clientes.dat");
+        FileOutputStream fileout = new FileOutputStream(fichero);
+        ObjectOutputStream dataIS=new ObjectOutputStream(fileout);
 
+
+        
+        dataIS.close();
     }
 }
