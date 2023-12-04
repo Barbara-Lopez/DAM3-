@@ -1,3 +1,4 @@
+import modelos.Client;
 import modelos.Usuario;
 
 import javax.crypto.Cipher;
@@ -71,10 +72,11 @@ public class Cliente {
                             // flujo de entrada que se utiliza para recoger si la nueva cuenta se ha ceado correctamente
                             textoEntrada =new DataInputStream(cliente.getInputStream());
                             Boolean inicioOk= textoEntrada.readBoolean();
+                            String testo=textoEntrada.readUTF();
                             if(inicioOk){
-
+                                System.out.println(testo);
                             }else{
-                                System.out.println("Pasó algún error a la hora de guardar los datos");
+                                System.out.println(testo);
                             }
                             break;
                         }
@@ -137,22 +139,28 @@ public class Cliente {
         objetoSalida = new ObjectOutputStream(cliente.getOutputStream());
         objetoSalida.writeObject(u);
     }
-    public static void crearCuenta() throws NoSuchAlgorithmException {
+    public static void crearCuenta() throws NoSuchAlgorithmException, IOException {
         String nombre;
         while (true) {
             try{
-                System.out.println("Escriba el usuario: ");
+                System.out.println("Escriba el nombre: ");
                 nombre = lectura.next();
+                if(nombre.isBlank()){
+                    throw new Exception("El nombre no puede estar vacio");
+                }
                 break;
             }catch (Exception e) {
-                throw new RuntimeException(e);
+                System.out.println(e.getMessage());
             }
         }
         String apellido;
         while (true) {
             try{
-                System.out.println("Escriba el usuario: ");
+                System.out.println("Escriba el apellido: ");
                 apellido = lectura.next();
+                if(apellido.isBlank()){
+                    throw new Exception("El apellido no puede estar vacio");
+                }
                 break;
             }catch (Exception e) {
                 throw new RuntimeException(e);
@@ -161,11 +169,13 @@ public class Cliente {
         Integer edad;
         while (true) {
             try{
-                System.out.println("Escriba el usuario: ");
+                System.out.println("Escriba la edad: ");
                 edad = Integer.parseInt(lectura.next());
                 break;
+            }catch (NumberFormatException e) {
+                System.out.println("Tiene que escribir un numero que corresponda contu edad");
             }catch (Exception e) {
-                throw new RuntimeException(e);
+                System.out.println(e.getMessage());
             }
         }
         String email;
@@ -190,9 +200,12 @@ public class Cliente {
             try{
                 System.out.println("Escriba el usuario: ");
                 user = lectura.next();
+                if(user.isBlank()){
+                    throw new Exception("El nombre del usuario no puede estar vacio");
+                }
                 break;
             }catch (Exception e) {
-                throw new RuntimeException(e);
+                System.out.println(e.getMessage());
             }
         }
         String contrasena;
@@ -200,9 +213,12 @@ public class Cliente {
             try{
                 System.out.println("Escriba la contraseña: ");
                 contrasena = lectura.next();
+                if(contrasena.isBlank()){
+                    throw new Exception("La contraseña no puede estar vacia");
+                }
                 break;
             }catch (Exception e) {
-                throw new RuntimeException(e);
+                System.out.println(e.getMessage());
             }
         }
         MessageDigest md = MessageDigest.getInstance("SHA");
@@ -210,6 +226,8 @@ public class Cliente {
         byte resumen[]=md.digest();
 
         Usuario u=new Usuario(user,resumen);
-
+        Client c=new Client(nombre,apellido,edad,email,u);
+        objetoSalida = new ObjectOutputStream(cliente.getOutputStream());
+        objetoSalida.writeObject(c);
     }
 }

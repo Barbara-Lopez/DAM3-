@@ -1,4 +1,4 @@
-import modelos.Cliente;
+import modelos.Client;
 import modelos.Usuario;
 
 import javax.crypto.Cipher;
@@ -7,7 +7,6 @@ import java.io.*;
 import java.security.*;
 import java.util.Arrays;
 import java.util.Objects;
-import modelos.*;
 
 public class Hilo extends Thread {
 
@@ -19,7 +18,7 @@ public class Hilo extends Thread {
     private static PrivateKey clavepriv;
     private static PublicKey clavepub;
     private static Integer opcion1=0;
-    private static Cliente client;
+    private static Client client;
     private static DataOutputStream textoSalida;
     private static DataInputStream textoEntrada;
     public Hilo(SSLSocket c) {
@@ -52,7 +51,7 @@ public class Hilo extends Thread {
                         }
                         case 2: {
                             objetoEntrada =new ObjectInputStream(cliente.getInputStream());
-                            Cliente cli =(Cliente) objetoEntrada.readObject();
+                            Client cli =(Client) objetoEntrada.readObject();
                             crearCuenta(cli);
                             break;
                         }
@@ -102,13 +101,13 @@ public class Hilo extends Thread {
         FileInputStream fileout;
         ObjectInputStream dataIS = null;
         File fichero = new File("src/files/Clientes.dat");
-        Cliente c= null;
+        Client c= null;
         try {
             fileout = new FileInputStream(fichero);
             dataIS = new ObjectInputStream(fileout);
 
             while (dataIS.available() != -1 ) {
-                client= (Cliente) dataIS.readObject();
+                client= (Client) dataIS.readObject();
                 System.out.println(client);
                 if(client.getUser().getUsuario().equalsIgnoreCase(user.getUsuario())){
                     c=client;
@@ -136,13 +135,58 @@ public class Hilo extends Thread {
             textoSalida.writeBoolean(false);
         }
     }
-    public static void crearCuenta(Cliente cli) throws IOException {
+    public static void crearCuenta(Client cli) throws IOException {
         File fichero = new File("src/files/Clientes.dat");
         FileOutputStream fileout = new FileOutputStream(fichero);
-        ObjectOutputStream dataIS=new ObjectOutputStream(fileout);
+        ObjectOutputStream dataOS=new ObjectOutputStream(fileout);
+        FileInputStream filein;
+        ObjectInputStream dataIS = null;
+        Client c= null;
+        Boolean clienteRepe=false;
+        Boolean userNombreRepe=false;
+        try {
+            filein = new FileInputStream(fichero);
+            dataIS = new ObjectInputStream(filein);
 
+            while (dataIS.available() != -1 ) {
+                client= (Client) dataIS.readObject();
+                System.out.println(client);
+                if(client.getNombre().equalsIgnoreCase(cli.getNombre()) && client.getApellido().equalsIgnoreCase(cli.getApellido())){
+                    c=client;
+                    clienteRepe = true;
+                    break;
+                }
+                if(client.getUser().getUsuario().equalsIgnoreCase(cli.getUser().getUsuario())){
+                    c=client;
+                    userNombreRepe = true;
+                    break;
+                }
+            }
+        }catch (EOFException eo){} catch (IOException | ClassNotFoundException e) {
+            System.out.println("No hay nada");
+        }
+        if(dataIS!=null){
+            dataIS.close();
+        }
+        if(c==null){
+            dataOS.writeObject(cli);
+            client= c;
+            textoSalida= new DataOutputStream(cliente.getOutputStream());
+            textoSalida.writeBoolean(true);
+            textoSalida.writeUTF("Cliente nuevo crado correctamente");
+        }else{
 
-        
-        dataIS.close();
+            textoSalida= new DataOutputStream(cliente.getOutputStream());
+            textoSalida.writeBoolean(false);
+            if(clienteRepe){
+                textoSalida.writeUTF("El cliente que quiere crear ya esá guardado, " +
+                        "si quiere crear uno nuevo escribalo con otro nombre y apellido");
+            }
+            if(userNombreRepe){
+                textoSalida.writeUTF("El cliente que quiere crear, tiene un nombre de usuario ya existenete," +
+                        "si quiere crear el usuario escribalo con un nombre de usuario diferente");
+            }
+        }
+        dataOS.close();
     }
 }

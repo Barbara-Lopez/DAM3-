@@ -4,18 +4,18 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Cliente implements Serializable {
+public class Client implements Serializable {
     private String nombre;
     private String apellido;
-    private String edad;
+    private Integer edad;
     private String email;
     private Usuario user;
     private List<Cuenta> cuentas=new ArrayList<Cuenta>();
 
-    public Cliente() {
+    public Client() {
     }
 
-    public Cliente(String nombre, String apellido, String edad, String email, Usuario user) {
+    public Client(String nombre, String apellido, Integer edad, String email, Usuario user) {
         this.nombre = nombre;
         this.apellido = apellido;
         this.edad = edad;
@@ -39,11 +39,11 @@ public class Cliente implements Serializable {
         this.apellido = apellido;
     }
 
-    public String getEdad() {
+    public Integer getEdad() {
         return edad;
     }
 
-    public void setEdad(String edad) {
+    public void setEdad(Integer edad) {
         this.edad = edad;
     }
 
