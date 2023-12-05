@@ -1,4 +1,5 @@
 import modelos.Client;
+import modelos.Mensaje;
 import modelos.Usuario;
 
 import javax.crypto.Cipher;
@@ -21,6 +22,7 @@ public class Hilo extends Thread {
     private static Client client;
     private static DataOutputStream textoSalida;
     private static DataInputStream textoEntrada;
+    private static Boolean sesionIniciada;
     public Hilo(SSLSocket c) {
         this.cliente = c;
 
@@ -41,12 +43,33 @@ public class Hilo extends Thread {
                 try {
                     DataInputStream op1 =new DataInputStream(cliente.getInputStream());
                     opcion1= op1.readInt();
-
+                    sesionIniciada=false;
                     switch(opcion1){
                         case 1: {
                             objetoEntrada =new ObjectInputStream(cliente.getInputStream());
                             Usuario user =(Usuario) objetoEntrada.readObject();
                             inicioSesion(user);
+                            if(sesionIniciada){
+                                textoSalida= new DataOutputStream(cliente.getOutputStream());
+                                textoSalida.writeUTF("Tiene que firmar este texto para poder hacer cualquier " +
+                                        "operacion como cliente");
+
+                                objetoEntrada =new ObjectInputStream(cliente.getInputStream());
+                                Mensaje m= (Mensaje) objetoEntrada.readObject();
+                                Signature rsaSignature = Signature.getInstance("SHA256withRSA");
+                                rsaSignature.initVerify(clavepubClient);
+                                rsaSignature.update(m.getTexto().getBytes());
+                                boolean check = rsaSignature.verify(m.getFirma());
+                                if (check) {
+                                    System.out.println("FiRMA VERIFICADA");
+                                    textoSalida= new DataOutputStream(cliente.getOutputStream());
+                                    textoSalida.writeBoolean(true);
+                                } else {
+                                    System.out.println("FiRMA NO VERIFICADA");
+                                    textoSalida= new DataOutputStream(cliente.getOutputStream());
+                                    textoSalida.writeBoolean(false);
+                                }
+                            }
                             break;
                         }
                         case 2: {
@@ -128,6 +151,7 @@ public class Hilo extends Thread {
             if(Objects.equals(contrasenaGuardada, contrasenaEnviada)){
                 textoSalida.writeBoolean(true);
                 client=c;
+                sesionIniciada=true;
             }else{
                 textoSalida.writeBoolean(false);
             }
@@ -174,6 +198,7 @@ public class Hilo extends Thread {
             textoSalida= new DataOutputStream(cliente.getOutputStream());
             textoSalida.writeBoolean(true);
             textoSalida.writeUTF("Cliente nuevo crado correctamente");
+            sesionIniciada=true;
         }else{
 
             textoSalida= new DataOutputStream(cliente.getOutputStream());

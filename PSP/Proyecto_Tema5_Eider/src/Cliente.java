@@ -1,4 +1,5 @@
 import modelos.Client;
+import modelos.Mensaje;
 import modelos.Usuario;
 
 import javax.crypto.Cipher;
@@ -57,7 +58,34 @@ public class Cliente {
                             textoEntrada =new DataInputStream(cliente.getInputStream());
                             Boolean inicioOk= textoEntrada.readBoolean();
                             if(inicioOk){
-
+                                textoEntrada =new DataInputStream(cliente.getInputStream());
+                                String textoFirmar= textoEntrada.readUTF();
+                                while(true){
+                                    System.out.println("El siguiente texto hay que firmarlo, escriba 'si' en el caso de querer firmarlo:\n" +
+                                            textoFirmar);
+                                    String firma = lectura.next();
+                                    if(firma.equalsIgnoreCase("si")){
+                                        Signature rsaSignature = Signature.getInstance("SHA256withRSA");
+                                        rsaSignature.initSign(clavepriv);
+                                        rsaSignature.update(textoFirmar.getBytes());
+                                        byte[] firmaHecha = rsaSignature.sign();
+                                        ObjectOutputStream firmaDigital= new ObjectOutputStream(cliente.getOutputStream());
+                                        firmaDigital.writeObject(new Mensaje(textoFirmar,firmaHecha));
+                                        break;
+                                    }else{
+                                        ObjectOutputStream firmaDigital= new ObjectOutputStream(cliente.getOutputStream());
+                                        byte[] firmaHecha = "No se ha firmado".getBytes();
+                                        firmaDigital.writeObject(new Mensaje(textoFirmar,firmaHecha));
+                                        break;
+                                    }
+                                }
+                                textoEntrada =new DataInputStream(cliente.getInputStream());
+                                Boolean firma= textoEntrada.readBoolean();
+                                if(firma){
+                                    System.out.println("Firmado correctamente");
+                                }else{
+                                    System.out.println("Fallo en la firma, no puede hacer ninguna operación");
+                                }
                             }else{
                                 System.out.println("Usuario o contraseña incorrecto");
                             }
@@ -96,7 +124,7 @@ public class Cliente {
                     System.out.println(e.getMessage());
                 }
             } while (op!=3);
-
+            cliente.close();
 
         }catch (Exception e) {
             throw new RuntimeException(e);
