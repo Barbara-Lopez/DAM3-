@@ -23,6 +23,7 @@ public class Cliente {
     private static DataOutputStream textoSalida;
     private static DataInputStream textoEntrada;
 
+
     public static void main(String[] args) {
         System.setProperty("javax.net.ssl.trustStore", "src/files/UsuarioAlmacenSSL");
         System.setProperty("javax.net.ssl.trustStorePassword", "890123");
@@ -83,6 +84,7 @@ public class Cliente {
                                 Boolean firma= textoEntrada.readBoolean();
                                 if(firma){
                                     System.out.println("Firmado correctamente");
+                                    operacionesCuenta();
                                 }else{
                                     System.out.println("Fallo en la firma, no puede hacer ninguna operación");
                                 }
@@ -103,6 +105,7 @@ public class Cliente {
                             String testo=textoEntrada.readUTF();
                             if(inicioOk){
                                 System.out.println(testo);
+                                System.out.println("Inicia sesión con el usuario y contraseña que acaba de crear");
                             }else{
                                 System.out.println(testo);
                             }
@@ -257,5 +260,65 @@ public class Cliente {
         Client c=new Client(nombre,apellido,edad,email,u);
         objetoSalida = new ObjectOutputStream(cliente.getOutputStream());
         objetoSalida.writeObject(c);
+    }
+    public static void operacionesCuenta(){
+        int op = 0;
+        do {
+            try {
+                System.out.println("Elija lo que quiere hacer: \n 1.Crear cuenta bancaria \n 2.Ver saldo de una cuenta bancaria \n 3.Hacer transferencia \n 4.Salir");
+                op = Integer.parseInt(lectura.next());
+                switch(op){
+                    case 1: {
+                        // ENviar al servidor que opcion ha elegido
+                        DataOutputStream op1= new DataOutputStream(cliente.getOutputStream());
+                        op1.writeInt(1);
+                        // función para iniciar sesion
+                        // operación necesaria;
+                        // flujo de entrada que se utiliza para recoger si el usuario y contraseña es correcto
+                        textoEntrada =new DataInputStream(cliente.getInputStream());
+                        Boolean creacionOk= textoEntrada.readBoolean();
+
+                        break;
+                    }
+                    case 2: {
+                        // ENviar al servidor que opcion ha elegido
+                        DataOutputStream  op1= new DataOutputStream(cliente.getOutputStream());
+                        op1.writeInt(2);
+                        // función para crear una nueva cuenta
+                        crearCuenta();
+                        // flujo de entrada que se utiliza para recoger si la nueva cuenta se ha ceado correctamente
+                        textoEntrada =new DataInputStream(cliente.getInputStream());
+                        Boolean inicioOk= textoEntrada.readBoolean();
+                        String testo=textoEntrada.readUTF();
+                        if(inicioOk){
+                            System.out.println(testo);
+                        }else{
+                            System.out.println(testo);
+                        }
+                        break;
+                    }
+                    case 3: {
+                        // ENviar al servidor que opcion ha elegido
+                        DataOutputStream  op1= new DataOutputStream(cliente.getOutputStream());
+                        op1.writeInt(3);
+                        break;
+                    }
+                    case 4: {
+                        // ENviar al servidor que opcion ha elegido
+                        DataOutputStream  op1= new DataOutputStream(cliente.getOutputStream());
+                        op1.writeInt(4);
+                        break;
+                    }
+                    default:
+                        System.out.println("Escriba un numero del 1 al 4");
+                }
+
+            } catch (NumberFormatException ex){
+                System.out.println("Tienes que escribir un numero");
+            } catch (Exception e){
+                System.out.println(e.getMessage());
+            }
+        } while (op!=4);
+
     }
 }

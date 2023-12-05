@@ -70,4 +70,30 @@ public class Client implements Serializable {
     public void setCuentas(List<Cuenta> cuentas) {
         this.cuentas = cuentas;
     }
+    public void addCuentas(Cuenta cuentas) {
+        this.cuentas.add(cuentas);
+    }
+
+
+    @Override
+    public String toString() {
+        String testo="Client{" +
+                "nombre='" + nombre + '\'' +
+                ", apellido='" + apellido + '\'' +
+                ", edad=" + edad +
+                ", email='" + email + '\'' +
+                ", user=" + user.getUsuario() +
+                ", cuentas= \n";
+        if(cuentas.isEmpty()){
+            testo+= "Sin cuentas \n";
+        }else{
+            for (Cuenta c:cuentas) {
+                testo+="Numero cuenta: "+ c.getNumeroCuenta()+", Saldo: "+c.getSaldo()+"\n";
+            }
+        }
+        testo+='}';
+        return testo;
+
+
+    }
 }
