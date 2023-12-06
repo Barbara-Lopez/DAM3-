@@ -29,4 +29,12 @@ public class Cuenta implements Serializable {
     public void setSaldo(Float saldo) {
         this.saldo = saldo;
     }
+
+    @Override
+    public String toString() {
+        return "Cuenta{" +
+                "numeroCuenta='" + numeroCuenta + '\'' +
+                ", saldo=" + saldo +
+                '}';
+    }
 }

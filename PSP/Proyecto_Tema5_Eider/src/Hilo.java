@@ -4,9 +4,7 @@ import javax.crypto.Cipher;
 import javax.net.ssl.SSLSocket;
 import java.io.*;
 import java.security.*;
-import java.util.Arrays;
-import java.util.Objects;
-import java.util.Random;
+import java.util.*;
 
 public class Hilo extends Thread {
 
@@ -247,11 +245,38 @@ public class Hilo extends Thread {
                         modClient();
                         textoSalida= new DataOutputStream(cliente.getOutputStream());
                         textoSalida.writeBoolean(true);
-
+                        objetoSalida = new ObjectOutputStream(cliente.getOutputStream());
+                        objetoSalida.writeObject(c);
                         break;
                     }
                     case 2: {
+                        List<String> cuentas=new ArrayList<>();
+                        for (Cuenta c:clienteEnSesion.getCuentas()) {
+                            cuentas.add(c.getNumeroCuenta());
+                        }
+                        objetoSalida = new ObjectOutputStream(cliente.getOutputStream());
+                        objetoSalida.writeObject(cuentas);
+                        objetoEntrada =new ObjectInputStream(cliente.getInputStream());
+                        byte[] cuenta= (byte[]) objetoEntrada.readObject();
 
+                        rsaCipher.init(Cipher.DECRYPT_MODE, clavepriv);
+                        String mensajeDescifrado = new String(rsaCipher.doFinal(cuenta));
+                        Cuenta verCuenta=null;
+                        for (Cuenta c:clienteEnSesion.getCuentas()) {
+                            if(c.getNumeroCuenta().equals(mensajeDescifrado)){
+                                verCuenta=c;
+                                break;
+                            }
+                        }
+
+                        textoSalida= new DataOutputStream(cliente.getOutputStream());
+                        if(verCuenta==null){
+                            textoSalida.writeBoolean(false);
+                        }else{
+                            textoSalida.writeBoolean(true);
+                            objetoSalida = new ObjectOutputStream(cliente.getOutputStream());
+                            objetoSalida.writeObject(verCuenta);
+                        }
 
                         break;
                     }

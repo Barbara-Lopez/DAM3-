@@ -1,4 +1,5 @@
 import modelos.Client;
+import modelos.Cuenta;
 import modelos.Mensaje;
 import modelos.Usuario;
 
@@ -7,6 +8,7 @@ import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 import java.io.*;
 import java.security.*;
+import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -277,23 +279,51 @@ public class Cliente {
                         // flujo de entrada que se utiliza para recoger si el usuario y contraseña es correcto
                         textoEntrada =new DataInputStream(cliente.getInputStream());
                         Boolean creacionOk= textoEntrada.readBoolean();
-
+                        objetoEntrada=new ObjectInputStream(cliente.getInputStream());
+                        Cuenta c = (Cuenta) objetoEntrada.readObject();
+                        if(creacionOk){
+                            System.out.println("Cuenta creada correctamente, el numero de la cuenta es: "+
+                                    c.getNumeroCuenta()+" y se crea con un saldo de 0€");
+                        }
                         break;
                     }
                     case 2: {
                         // ENviar al servidor que opcion ha elegido
                         DataOutputStream  op1= new DataOutputStream(cliente.getOutputStream());
                         op1.writeInt(2);
-                        // función para crear una nueva cuenta
-                        crearCuenta();
+                        // elegir la cuenta
+                        objetoEntrada=new ObjectInputStream(cliente.getInputStream());
+                        List c = (List) objetoEntrada.readObject();
+                        while(true){
+                            try{
+                                String text="Elija una de las cuentas (escriba el numero al lado del numero de la cuenta):\n";
+                                for (int i = 0; i < c.size(); i++) {
+                                    text+=i+". "+ c.get(i)+"\n";
+                                }
+                                Integer cuenta = Integer.parseInt(lectura.next());
+                                if(cuenta< c.size()){
+                                    String numCuenta= c.get(cuenta).toString();
+                                    rsaCipher.init(Cipher.ENCRYPT_MODE, clavepubServer);
+                                    byte[] cifrado = rsaCipher.doFinal(numCuenta.getBytes());
+                                    objetoSalida = new ObjectOutputStream(cliente.getOutputStream());
+                                    objetoSalida.writeObject(cifrado);
+                                    break;
+                                }
+                            } catch (NumberFormatException ex){
+                                System.out.println("Tienes que escribir un numero");
+                            } catch (Exception e){
+                                System.out.println(e.getMessage());
+                            }
+                        }
                         // flujo de entrada que se utiliza para recoger si la nueva cuenta se ha ceado correctamente
                         textoEntrada =new DataInputStream(cliente.getInputStream());
                         Boolean inicioOk= textoEntrada.readBoolean();
-                        String testo=textoEntrada.readUTF();
                         if(inicioOk){
-                            System.out.println(testo);
+                            objetoEntrada=new ObjectInputStream(cliente.getInputStream());
+                            Cuenta cuenta = (Cuenta) objetoEntrada.readObject();
+                            System.out.println(cuenta.toString());
                         }else{
-                            System.out.println(testo);
+                            System.out.println("No se ha encontrado la cuenta");
                         }
                         break;
                     }
