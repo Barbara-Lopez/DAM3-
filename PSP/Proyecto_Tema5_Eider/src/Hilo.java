@@ -120,14 +120,12 @@ public class Hilo extends Thread {
         }
     }
     public static void inicioSesion(Usuario user) throws IOException {
-        FileInputStream fileout;
-        ObjectInputStream dataIS = null;
+
         File fichero = new File("src/files/Clientes.dat");
+        FileInputStream fileout = new FileInputStream(fichero);
+        ObjectInputStream dataIS = new ObjectInputStream(fileout);
         Client c= null;
         try {
-            fileout = new FileInputStream(fichero);
-            dataIS = new ObjectInputStream(fileout);
-
             while (dataIS.available() != -1 ) {
                 Client client= (Client) dataIS.readObject();
                 System.out.println(client);
@@ -137,12 +135,10 @@ public class Hilo extends Thread {
                 }
 
             }
-        }catch (EOFException eo){} catch (IOException | ClassNotFoundException e) {
-            System.out.println("No hay nada");
-        }
-        if(dataIS!=null){
-            dataIS.close();
-        }
+
+        }catch (EOFException | ClassNotFoundException eo){}
+
+        dataIS.close();
         textoSalida= new DataOutputStream(cliente.getOutputStream());
         if(c!=null){
             String contrasenaGuardada= Arrays.toString(c.getUser().getContrasena());
@@ -242,6 +238,7 @@ public class Hilo extends Thread {
                         }
                         Cuenta c=new Cuenta(numCuenta, 00.00F);
                         clienteEnSesion.addCuentas(c);
+                        System.out.println(clienteEnSesion.getCuentas());
                         modClient();
                         textoSalida= new DataOutputStream(cliente.getOutputStream());
                         textoSalida.writeBoolean(true);
@@ -250,34 +247,46 @@ public class Hilo extends Thread {
                         break;
                     }
                     case 2: {
-                        List<String> cuentas=new ArrayList<>();
-                        for (Cuenta c:clienteEnSesion.getCuentas()) {
-                            cuentas.add(c.getNumeroCuenta());
-                        }
-                        objetoSalida = new ObjectOutputStream(cliente.getOutputStream());
-                        objetoSalida.writeObject(cuentas);
-                        objetoEntrada =new ObjectInputStream(cliente.getInputStream());
-                        byte[] cuenta= (byte[]) objetoEntrada.readObject();
+                        //System.out.println("opcion 2");
+                        String cuentas="";
+                        if(clienteEnSesion.getCuentas().isEmpty()){
+                            cuentas="No hay cuentas crea una";
+                            textoSalida= new DataOutputStream(cliente.getOutputStream());
+                            textoSalida.writeBoolean(false);
 
-                        rsaCipher.init(Cipher.DECRYPT_MODE, clavepriv);
-                        String mensajeDescifrado = new String(rsaCipher.doFinal(cuenta));
-                        Cuenta verCuenta=null;
-                        for (Cuenta c:clienteEnSesion.getCuentas()) {
-                            if(c.getNumeroCuenta().equals(mensajeDescifrado)){
-                                verCuenta=c;
-                                break;
+                            textoSalida.writeUTF(cuentas);
+                        }else{
+                            for (Cuenta c:clienteEnSesion.getCuentas()) {
+                                cuentas+=c.getNumeroCuenta()+", ";
+                            }
+                            textoSalida= new DataOutputStream(cliente.getOutputStream());
+                            textoSalida.writeBoolean(false);
+                            textoSalida.writeUTF(cuentas);
+                            
+                            objetoEntrada =new ObjectInputStream(cliente.getInputStream());
+                            byte[] cuenta= (byte[]) objetoEntrada.readObject();
+
+                            rsaCipher.init(Cipher.DECRYPT_MODE, clavepriv);
+                            String mensajeDescifrado = new String(rsaCipher.doFinal(cuenta));
+                            Cuenta verCuenta=null;
+                            for (Cuenta c:clienteEnSesion.getCuentas()) {
+                                if(c.getNumeroCuenta().equals(mensajeDescifrado)){
+                                    verCuenta=c;
+                                    break;
+                                }
+                            }
+
+                            textoSalida= new DataOutputStream(cliente.getOutputStream());
+                            if(verCuenta==null){
+                                System.out.println("Cuenta NO encontrada");
+                                textoSalida.writeBoolean(false);
+                            }else{
+                                System.out.println("Cuenta encontrada");
+                                textoSalida.writeBoolean(true);
+                                objetoSalida = new ObjectOutputStream(cliente.getOutputStream());
+                                objetoSalida.writeObject(verCuenta);
                             }
                         }
-
-                        textoSalida= new DataOutputStream(cliente.getOutputStream());
-                        if(verCuenta==null){
-                            textoSalida.writeBoolean(false);
-                        }else{
-                            textoSalida.writeBoolean(true);
-                            objetoSalida = new ObjectOutputStream(cliente.getOutputStream());
-                            objetoSalida.writeObject(verCuenta);
-                        }
-
                         break;
                     }
                     case 3: {
@@ -290,6 +299,10 @@ public class Hilo extends Thread {
 
                         break;
                     }
+                    case 5: {
+                        System.out.println(clienteEnSesion.getNombre()+" Sale de las operaciones de la app");
+                        break;
+                    }
                 }
 
             } catch (NumberFormatException ex){
@@ -297,17 +310,17 @@ public class Hilo extends Thread {
             } catch (Exception e){
                 System.out.println(e.getMessage());
             }
-        } while (opcion2!=4);
+        } while (opcion2!=5);
 
     }
 
     public static void modClient() throws IOException {
         Client c = null;
-        File fichero = new File("src/Ficheros/Clientes.dat");
+        File fichero = new File("src/files/Clientes.dat");
         FileInputStream filein = new FileInputStream(fichero);
         ObjectInputStream dataIS = new ObjectInputStream(filein);
         // aqui estaran los nuevos datos
-        File ficheroaux = new File("src/Ficheros/AuxClientes.dat");
+        File ficheroaux = new File("src/files/AuxClientes.dat");
         FileOutputStream fileout = new FileOutputStream(ficheroaux);
         ObjectOutputStream dataOS = new ObjectOutputStream(fileout);
         // recuperar argumentos de main
@@ -318,13 +331,13 @@ public class Hilo extends Thread {
             while (dataIS.available() != -1) { // lectura del fichero
                 c = (Client) dataIS.readObject();
                 if (Objects.equals(c.getNombre(), clienteEnSesion.getNombre()) && Objects.equals(c.getApellido(), clienteEnSesion.getApellido()) ) {
-                    //System.out.println("Datos ANTIGUOS objeto: \n" + a.toString());
+                    System.out.println("Datos ANTIGUOS objeto: \n" + c.toString());
                     c.setCuentas(clienteEnSesion.getCuentas());
                     clienteexiste = 1;
                 }
 
                 Client c2 = new Client(c.getNombre(),c.getApellido(),c.getEdad(),c.getEmail(),c.getUser());
-                c2.setCuentas(c2.getCuentas());
+                c2.setCuentas(c.getCuentas());
                 dataOS.writeObject(c2); // inserto en fichero auxiliar
             }
         }catch (Exception e) {
@@ -343,11 +356,11 @@ public class Hilo extends Thread {
     public static void crearNuevoCliente() throws IOException {
         Client c;
         // Leo auxiliar e inserto en Departamentos
-        File fichero = new File("src/Ficheros/AuxClientes.dat");
+        File fichero = new File("src/files/AuxClientes.dat");
         FileInputStream filein = new FileInputStream(fichero);
         ObjectInputStream dataIS = new ObjectInputStream(filein);
         // aquí estarán los nuevos datos
-        File ficheroaux = new File("src/Ficheros/Clientes.dat");
+        File ficheroaux = new File("src/files/Clientes.dat");
         FileOutputStream fileout = new FileOutputStream(ficheroaux);
         ObjectOutputStream dataOS = new ObjectOutputStream(fileout);
         try {
@@ -367,7 +380,7 @@ public class Hilo extends Thread {
     }// fin Crear Nuevo Dep
 
     public static void ListadoNuevo(Client client) throws IOException {
-        File fichero = new File("src/Ficheros/Aldeano.dat");
+        File fichero = new File("src/files/Clientes.dat");
         FileInputStream filein = new FileInputStream(fichero);
         ObjectInputStream dataIS = new ObjectInputStream(filein);
 
