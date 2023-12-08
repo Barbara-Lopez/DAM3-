@@ -260,9 +260,9 @@ public class Hilo extends Thread {
                                 cuentas+=c.getNumeroCuenta()+", ";
                             }
                             textoSalida= new DataOutputStream(cliente.getOutputStream());
-                            textoSalida.writeBoolean(false);
+                            textoSalida.writeBoolean(true);
                             textoSalida.writeUTF(cuentas);
-                            
+
                             objetoEntrada =new ObjectInputStream(cliente.getInputStream());
                             byte[] cuenta= (byte[]) objetoEntrada.readObject();
 
@@ -295,7 +295,48 @@ public class Hilo extends Thread {
                         break;
                     }
                     case 4: {
+                        String cuentas="";
+                        if(clienteEnSesion.getCuentas().isEmpty()){
+                            cuentas="No hay cuentas crea una";
+                            textoSalida= new DataOutputStream(cliente.getOutputStream());
+                            textoSalida.writeBoolean(false);
+                            textoSalida.writeUTF(cuentas);
+                        }else{
+                            for (Cuenta c:clienteEnSesion.getCuentas()) {
+                                cuentas+=c.getNumeroCuenta()+", ";
+                            }
+                            textoSalida= new DataOutputStream(cliente.getOutputStream());
+                            textoSalida.writeBoolean(true);
+                            textoSalida.writeUTF(cuentas);
 
+                            objetoEntrada =new ObjectInputStream(cliente.getInputStream());
+                            byte[] cuenta= (byte[]) objetoEntrada.readObject();
+
+                            textoEntrada =new DataInputStream(cliente.getInputStream());
+                            Integer saldo= op2.readInt();
+
+                            rsaCipher.init(Cipher.DECRYPT_MODE, clavepriv);
+                            String mensajeDescifrado = new String(rsaCipher.doFinal(cuenta));
+                            Cuenta verCuenta=null;
+                            for (Cuenta c:clienteEnSesion.getCuentas()) {
+                                if(c.getNumeroCuenta().equals(mensajeDescifrado)){
+                                    c.setSaldo(c.getSaldo()+saldo);
+                                    verCuenta=c;
+                                    break;
+                                }
+                            }
+                            System.out.println(clienteEnSesion.getCuentas());
+                            modClient();
+                            textoSalida= new DataOutputStream(cliente.getOutputStream());
+                            if(verCuenta==null){
+                                System.out.println("Cuenta NO encontrada");
+                                textoSalida.writeBoolean(false);
+                            }else{
+                                textoSalida.writeBoolean(true);
+                                objetoSalida = new ObjectOutputStream(cliente.getOutputStream());
+                                objetoSalida.writeObject(verCuenta);
+                            }
+                        }
 
                         break;
                     }
@@ -348,7 +389,7 @@ public class Hilo extends Thread {
                 ListadoNuevo(c);
             } else {
                 System.out.println("===================================");
-                System.out.println("El aldeano no existe");
+                System.out.println("El cliente no existe");
                 System.out.println("===================================");
             }
         }
@@ -392,9 +433,8 @@ public class Hilo extends Thread {
                 }
             }
         } catch (EOFException | ClassNotFoundException eo) {
-            System.out.println("Fin de lectura");
         }
-        System.out.println("=======================================================");
+
         dataIS.close(); //Cerramos el flujo de entrada
     }
 

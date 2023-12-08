@@ -322,7 +322,8 @@ public class Cliente {
                                     System.out.println(e.getMessage());
                                 }
                             }
-                            // flujo de entrada que se utiliza para recoger si la nueva cuenta se ha ceado correctamente
+                            // flujo de entrada que se utiliza para recoger si la nueva cuenta se ha
+                            // encontrado correctamente y la muestra
                             textoEntrada = new DataInputStream(cliente.getInputStream());
                             Boolean inicioOk = textoEntrada.readBoolean();
                             if (inicioOk) {
@@ -347,6 +348,67 @@ public class Cliente {
                         // ENviar al servidor que opcion ha elegido
                         DataOutputStream  op1= new DataOutputStream(cliente.getOutputStream());
                         op1.writeInt(4);
+
+                        // elegir la cuenta
+                        textoEntrada =new DataInputStream(cliente.getInputStream());
+                        Boolean ok= textoEntrada.readBoolean();
+                        String c= textoEntrada.readUTF();
+                        if(ok) {
+                            while (true) {
+                                try {
+                                    String text = "Elija una de las cuentas (escriba el numero al lado del numero de la cuenta):";
+                                    String[] listaCuenta = c.split(", ");
+                                    for (int i = 0; i < listaCuenta.length; i++) {
+                                        text += i + ". " + listaCuenta[i] + "\n";
+                                    }
+                                    System.out.println(text);
+                                    Integer cuenta = Integer.parseInt(lectura.next());
+                                    if (cuenta < listaCuenta.length) {
+                                        String numCuenta = listaCuenta[cuenta];
+                                        rsaCipher.init(Cipher.ENCRYPT_MODE, clavepubServer);
+                                        byte[] cifrado = rsaCipher.doFinal(numCuenta.getBytes());
+                                        objetoSalida = new ObjectOutputStream(cliente.getOutputStream());
+                                        objetoSalida.writeObject(cifrado);
+                                        break;
+                                    } else {
+                                        throw new Exception("Escriba uno de los numeros al lado del numero de la cuenta");
+                                    }
+                                } catch (NumberFormatException ex) {
+                                    System.out.println("Tienes que escribir un numero");
+                                } catch (Exception e) {
+                                    System.out.println(e.getMessage());
+                                }
+                            }
+                            Integer ingresos;
+                            while (true) {
+                                try {
+                                    System.out.println("Escriba en numeros cual es la cantidad que quiere ingresar:\n");
+                                    ingresos = Integer.parseInt(lectura.next());
+                                    break;
+                                } catch (NumberFormatException ex) {
+                                    System.out.println("Tienes que escribir un numero");
+                                } catch (Exception e) {
+                                    System.out.println(e.getMessage());
+                                }
+                            }
+                            textoSalida= new DataOutputStream(cliente.getOutputStream());
+                            op1.writeInt(ingresos);
+                            // flujo de entrada que se utiliza para recoger si la nueva cuenta se ha
+                            // encontrado correctamente y la muestra
+                            textoEntrada = new DataInputStream(cliente.getInputStream());
+                            Boolean inicioOk = textoEntrada.readBoolean();
+                            if (inicioOk) {
+                                objetoEntrada = new ObjectInputStream(cliente.getInputStream());
+                                Cuenta cuenta = (Cuenta) objetoEntrada.readObject();
+                                System.out.println(cuenta.toString());
+                            } else {
+                                System.out.println("No se ha encontrado la cuenta");
+                            }
+                        }else{
+                            System.out.println(c);
+                        }
+
+
                         break;
                     }
                     case 5: {
