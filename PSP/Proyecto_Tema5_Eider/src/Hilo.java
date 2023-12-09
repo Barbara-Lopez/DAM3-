@@ -313,7 +313,7 @@ public class Hilo extends Thread {
                             byte[] cuenta= (byte[]) objetoEntrada.readObject();
 
                             textoEntrada =new DataInputStream(cliente.getInputStream());
-                            Integer saldo= op2.readInt();
+                            Float saldo= op2.readFloat();
 
                             rsaCipher.init(Cipher.DECRYPT_MODE, clavepriv);
                             String mensajeDescifrado = new String(rsaCipher.doFinal(cuenta));

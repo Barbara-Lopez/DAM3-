@@ -379,12 +379,19 @@ public class Cliente {
                                     System.out.println(e.getMessage());
                                 }
                             }
-                            Integer ingresos;
+                            Float ingresos = null;
                             while (true) {
                                 try {
                                     System.out.println("Escriba en numeros cual es la cantidad que quiere ingresar:\n");
-                                    ingresos = Integer.parseInt(lectura.next());
-                                    break;
+                                    String saldo = lectura.next();
+                                    Pattern p = Pattern.compile("^[0-9]{1,3}.[0-9]{2}$");
+                                    Matcher m = p.matcher(saldo);
+                                    if(m.find()) {
+                                        ingresos= Float.valueOf(saldo);
+                                        break;
+                                    }else{
+                                        throw new Exception("Tiene que escribir '0.00' o '00.00' ");
+                                    }
                                 } catch (NumberFormatException ex) {
                                     System.out.println("Tienes que escribir un numero");
                                 } catch (Exception e) {
@@ -392,7 +399,7 @@ public class Cliente {
                                 }
                             }
                             textoSalida= new DataOutputStream(cliente.getOutputStream());
-                            op1.writeInt(ingresos);
+                            op1.writeFloat(ingresos);
                             // flujo de entrada que se utiliza para recoger si la nueva cuenta se ha
                             // encontrado correctamente y la muestra
                             textoEntrada = new DataInputStream(cliente.getInputStream());
