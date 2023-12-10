@@ -4,6 +4,8 @@ import javax.crypto.Cipher;
 import javax.net.ssl.SSLSocket;
 import java.io.*;
 import java.security.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class Hilo extends Thread {
@@ -48,6 +50,7 @@ public class Hilo extends Thread {
                             Usuario user =(Usuario) objetoEntrada.readObject();
                             inicioSesion(user);
                             if(sesionIniciada){
+                                log(clienteEnSesion.getUser().getUsuario()+" ha iniciado sesión ");
                                 textoSalida= new DataOutputStream(cliente.getOutputStream());
                                 textoSalida.writeUTF("Tiene que firmar este texto para poder hacer cualquier " +
                                         "operacion como cliente");
@@ -59,11 +62,13 @@ public class Hilo extends Thread {
                                 rsaSignature.update(m.getTexto().getBytes());
                                 boolean check = rsaSignature.verify(m.getFirma());
                                 if (check) {
+                                    log(clienteEnSesion.getUser().getUsuario()+" ha firmado correctamente");
                                     System.out.println("FiRMA VERIFICADA");
                                     textoSalida= new DataOutputStream(cliente.getOutputStream());
                                     textoSalida.writeBoolean(true);
                                     operacionesCuenta();
                                 } else {
+                                    log(clienteEnSesion.getUser().getUsuario()+" no ha firmado correctamente para poder hacer opreraciones ");
                                     System.out.println("FiRMA NO VERIFICADA");
                                     textoSalida= new DataOutputStream(cliente.getOutputStream());
                                     textoSalida.writeBoolean(false);
@@ -128,7 +133,7 @@ public class Hilo extends Thread {
         try {
             while (dataIS.available() != -1 ) {
                 Client client= (Client) dataIS.readObject();
-                System.out.println(client);
+                //System.out.println(client);
                 if(client.getUser().getUsuario().equalsIgnoreCase(user.getUsuario())){
                     c=client;
                     break;
@@ -148,9 +153,11 @@ public class Hilo extends Thread {
                 clienteEnSesion=c;
                 sesionIniciada=true;
             }else{
+                sesionIniciada=false;
                 textoSalida.writeBoolean(false);
             }
         }else{
+            sesionIniciada=false;
             textoSalida.writeBoolean(false);
         }
     }
@@ -216,6 +223,7 @@ public class Hilo extends Thread {
                 opcion2= op2.readInt();
                 switch(opcion2){
                     case 1: {
+                        System.out.println("opcion 1");
                         Random random = new Random();
                         int lowerBound = 0;
                         int upperBound = 9;
@@ -229,13 +237,19 @@ public class Hilo extends Thread {
                             if(clienteEnSesion.getCuentas().isEmpty()){
                                 numCuentaBalida=true;
                             }else{
+                                Boolean repe=false;
                                 for (Cuenta c: clienteEnSesion.getCuentas()) {
                                     if(c.getNumeroCuenta().equals(numCuenta)){
+                                        repe=true;
                                         break;
                                     }
                                 }
+                                if(!repe) {
+                                    numCuentaBalida = true;
+                                }
                             }
                         }
+                        System.out.println(numCuenta);
                         Cuenta c=new Cuenta(numCuenta, 00.00F);
                         clienteEnSesion.addCuentas(c);
                         System.out.println(clienteEnSesion.getCuentas());
@@ -244,12 +258,14 @@ public class Hilo extends Thread {
                         textoSalida.writeBoolean(true);
                         objetoSalida = new ObjectOutputStream(cliente.getOutputStream());
                         objetoSalida.writeObject(c);
+                        log(clienteEnSesion.getUser().getUsuario()+" ha creado una nueva cuenta bancaria, "+c.getNumeroCuenta());
                         break;
                     }
                     case 2: {
                         //System.out.println("opcion 2");
                         String cuentas="";
                         if(clienteEnSesion.getCuentas().isEmpty()){
+                            log(clienteEnSesion.getUser().getUsuario()+" ha intentado mirar el saldo de una cuenta pero no tiene ninguna");
                             cuentas="No hay cuentas crea una";
                             textoSalida= new DataOutputStream(cliente.getOutputStream());
                             textoSalida.writeBoolean(false);
@@ -278,9 +294,11 @@ public class Hilo extends Thread {
 
                             textoSalida= new DataOutputStream(cliente.getOutputStream());
                             if(verCuenta==null){
+                                log(clienteEnSesion.getUser().getUsuario()+" ha intentado mirar el saldo de una cuenta");
                                 System.out.println("Cuenta NO encontrada");
                                 textoSalida.writeBoolean(false);
                             }else{
+                                log(clienteEnSesion.getUser().getUsuario()+" ha mirado el saldo de la cuenta "+ verCuenta.getNumeroCuenta());
                                 System.out.println("Cuenta encontrada");
                                 textoSalida.writeBoolean(true);
                                 objetoSalida = new ObjectOutputStream(cliente.getOutputStream());
@@ -290,57 +308,93 @@ public class Hilo extends Thread {
                         break;
                     }
                     case 3: {
-
-
+                        String logCliente=cogerLog();
+                        textoSalida= new DataOutputStream(cliente.getOutputStream());
+                        textoSalida.writeUTF(logCliente);
                         break;
                     }
                     case 4: {
+                        System.out.println("punto 4");
                         String cuentas="";
                         if(clienteEnSesion.getCuentas().isEmpty()){
+                            log(clienteEnSesion.getUser().getUsuario()+" ha intentado hacer transferencias pero no tirnr ninguna cuenta hecha");
                             cuentas="No hay cuentas crea una";
                             textoSalida= new DataOutputStream(cliente.getOutputStream());
                             textoSalida.writeBoolean(false);
                             textoSalida.writeUTF(cuentas);
-                        }else{
-                            for (Cuenta c:clienteEnSesion.getCuentas()) {
-                                cuentas+=c.getNumeroCuenta()+", ";
+                        }else {
+                            for (Cuenta c : clienteEnSesion.getCuentas()) {
+                                cuentas += c.getNumeroCuenta() + ", ";
                             }
-                            textoSalida= new DataOutputStream(cliente.getOutputStream());
+                            textoSalida = new DataOutputStream(cliente.getOutputStream());
                             textoSalida.writeBoolean(true);
                             textoSalida.writeUTF(cuentas);
 
-                            objetoEntrada =new ObjectInputStream(cliente.getInputStream());
-                            byte[] cuenta= (byte[]) objetoEntrada.readObject();
+                            objetoEntrada = new ObjectInputStream(cliente.getInputStream());
+                            byte[] cuenta = (byte[]) objetoEntrada.readObject();
 
-                            textoEntrada =new DataInputStream(cliente.getInputStream());
-                            Float saldo= op2.readFloat();
 
-                            rsaCipher.init(Cipher.DECRYPT_MODE, clavepriv);
-                            String mensajeDescifrado = new String(rsaCipher.doFinal(cuenta));
-                            Cuenta verCuenta=null;
-                            for (Cuenta c:clienteEnSesion.getCuentas()) {
-                                if(c.getNumeroCuenta().equals(mensajeDescifrado)){
-                                    c.setSaldo(c.getSaldo()+saldo);
-                                    verCuenta=c;
-                                    break;
-                                }
+                            textoEntrada = new DataInputStream(cliente.getInputStream());
+                            Float saldo = op2.readFloat();
+
+
+                            Random random = new Random();
+                            int lowerBound = 0;
+                            int upperBound = 9;
+                            String cod = "";
+                            for (int i = 0; i < 4; i++) {
+                                int randomNumber = random.nextInt(upperBound - lowerBound + 1) + lowerBound;
+                                cod += randomNumber;
                             }
-                            System.out.println(clienteEnSesion.getCuentas());
-                            modClient();
-                            textoSalida= new DataOutputStream(cliente.getOutputStream());
-                            if(verCuenta==null){
-                                System.out.println("Cuenta NO encontrada");
-                                textoSalida.writeBoolean(false);
+                            System.out.println(cod);
+                            rsaCipher.init(Cipher.ENCRYPT_MODE, clavepubClient);
+                            byte[] cifrado = rsaCipher.doFinal(cod.getBytes());
+                            objetoSalida = new ObjectOutputStream(cliente.getOutputStream());
+                            objetoSalida.writeObject(cifrado);
+
+
+                            textoEntrada = new DataInputStream(cliente.getInputStream());
+                            String codDescifrado = op2.readUTF();
+
+                            if (cod.equals(codDescifrado)) {
+
+                                rsaCipher.init(Cipher.DECRYPT_MODE, clavepriv);
+                                String mensajeDescifrado = new String(rsaCipher.doFinal(cuenta));
+                                Cuenta verCuenta = null;
+                                for (Cuenta c : clienteEnSesion.getCuentas()) {
+                                    if (c.getNumeroCuenta().equals(mensajeDescifrado)) {
+                                        c.setSaldo(c.getSaldo() + saldo);
+                                        verCuenta = c;
+                                        break;
+                                    }
+                                }
+                                System.out.println(clienteEnSesion.getCuentas());
+                                modClient();
+                                textoSalida = new DataOutputStream(cliente.getOutputStream());
+                                if (verCuenta == null) {
+                                    log(clienteEnSesion.getUser().getUsuario()+" ha intentado hacer una tranferencia");
+                                    System.out.println("Cuenta NO encontrada");
+                                    textoSalida.writeBoolean(false);
+                                    textoSalida.writeUTF("Cuenta NO encontrada");
+                                } else {
+                                    textoSalida.writeBoolean(true);
+                                    objetoSalida = new ObjectOutputStream(cliente.getOutputStream());
+                                    objetoSalida.writeObject(verCuenta);
+                                    log(clienteEnSesion.getUser().getUsuario()+" ha hecho una transferencia a la cuenta "+verCuenta.getNumeroCuenta()
+                                     +" de "+saldo+" y ahora tiene " +verCuenta.getSaldo());
+                                }
                             }else{
-                                textoSalida.writeBoolean(true);
-                                objetoSalida = new ObjectOutputStream(cliente.getOutputStream());
-                                objetoSalida.writeObject(verCuenta);
+                                log(clienteEnSesion.getUser().getUsuario()+" ha intentado hacer una tranferencia");
+                                textoSalida = new DataOutputStream(cliente.getOutputStream());
+                                textoSalida.writeBoolean(false);
+                                textoSalida.writeUTF("El codigo descifrado no es correcto");
                             }
                         }
 
                         break;
                     }
                     case 5: {
+                        log(clienteEnSesion.getUser().getUsuario()+" ha salido de las operaciones ");
                         System.out.println(clienteEnSesion.getNombre()+" Sale de las operaciones de la app");
                         break;
                     }
@@ -437,6 +491,46 @@ public class Hilo extends Thread {
 
         dataIS.close(); //Cerramos el flujo de entrada
     }
+    public static void log(String testo) throws IOException {
+        // Crea un objeto File con la ruta del archivo
+        File archivo = new File("src/files/"+clienteEnSesion.getUser().getUsuario()+"log");
 
+        // Verifica si el archivo existe
+        if (!archivo.exists()) {
+            System.out.println("Archivo log cliente no encontrado, se va ha proceder a crearlo");
+            FileOutputStream fos = new FileOutputStream(archivo);
+            // Cierra el flujo de salida
+            fos.close();
+            System.out.println("Archivo log cliente creado");
+        }
+        LocalDateTime myDateObj = LocalDateTime.now();
+        DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+        String formattedDate = myDateObj.format(myFormatObj);
+        String text=cogerLog();
+        text+=formattedDate+" "+testo;
+        FileWriter f = new FileWriter ("src/files/"+clienteEnSesion.getUser().getUsuario()+"log");
+        f.write(text);
+        f.close();
+    }
+    public static String cogerLog(){
+        String text="";
+        try {
+            FileReader fr = new FileReader("src/files/"+clienteEnSesion.getUser().getUsuario()+"log");
+            BufferedReader br = new BufferedReader(fr);
+
+            String linea;
+
+            while((linea = br.readLine())!= null)
+                text+=linea+"\n";
+
+            br.close();
+        }
+        catch (FileNotFoundException fn) {
+            System.out.println("Error de lectura");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return text;
+    }
 
 }

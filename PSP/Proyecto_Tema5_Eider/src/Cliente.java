@@ -204,6 +204,9 @@ public class Cliente {
             try{
                 System.out.println("Escriba la edad: ");
                 edad = Integer.parseInt(lectura.next());
+                if(edad<18){
+                    throw new Exception("Tiene que escribir un numero mayor o igual al 18 para poder ser un cliente");
+                }
                 break;
             }catch (NumberFormatException e) {
                 System.out.println("Tiene que escribir un numero que corresponda contu edad");
@@ -268,15 +271,13 @@ public class Cliente {
         do {
             try {
                 System.out.println("Elija lo que quiere hacer: \n 1.Crear cuenta bancaria \n 2.Ver saldo de una cuenta bancaria " +
-                        "\n 3.Hacer transferencia \n 4.Ingresar dinero \n 5.Salir");
+                        "\n 3.Mirar el registro de operaciones hechas \n 4.Hacer transferencia \n 5.Salir");
                 op = Integer.parseInt(lectura.next());
                 switch(op){
                     case 1: {
                         // ENviar al servidor que opcion ha elegido
                         DataOutputStream op1= new DataOutputStream(cliente.getOutputStream());
                         op1.writeInt(1);
-                        // función para iniciar sesion
-                        // operación necesaria;
                         // flujo de entrada que se utiliza para recoger si el usuario y contraseña es correcto
                         textoEntrada =new DataInputStream(cliente.getInputStream());
                         Boolean creacionOk= textoEntrada.readBoolean();
@@ -285,6 +286,8 @@ public class Cliente {
                         if(creacionOk){
                             System.out.println("Cuenta creada correctamente, el numero de la cuenta es: "+
                                     c.getNumeroCuenta()+" y se crea con un saldo de 0€");
+                        }else{
+                            System.out.println("Ha ocurrido algun error al hacer la cuenta");
                         }
                         break;
                     }
@@ -342,6 +345,10 @@ public class Cliente {
                         // ENviar al servidor que opcion ha elegido
                         DataOutputStream  op1= new DataOutputStream(cliente.getOutputStream());
                         op1.writeInt(3);
+                        textoEntrada =new DataInputStream(cliente.getInputStream());
+                        String log= textoEntrada.readUTF();
+                        System.out.println(log);
+
                         break;
                     }
                     case 4: {
@@ -356,7 +363,7 @@ public class Cliente {
                         if(ok) {
                             while (true) {
                                 try {
-                                    String text = "Elija una de las cuentas (escriba el numero al lado del numero de la cuenta):";
+                                    String text = "Elija una de las cuentas (escriba el numero al lado del numero de la cuenta):\n";
                                     String[] listaCuenta = c.split(", ");
                                     for (int i = 0; i < listaCuenta.length; i++) {
                                         text += i + ". " + listaCuenta[i] + "\n";
@@ -382,7 +389,7 @@ public class Cliente {
                             Float ingresos = null;
                             while (true) {
                                 try {
-                                    System.out.println("Escriba en numeros cual es la cantidad que quiere ingresar:\n");
+                                    System.out.println("Escriba en numeros cual es la cantidad que quiere ingresar:");
                                     String saldo = lectura.next();
                                     Pattern p = Pattern.compile("^[0-9]{1,3}.[0-9]{2}$");
                                     Matcher m = p.matcher(saldo);
@@ -400,6 +407,33 @@ public class Cliente {
                             }
                             textoSalida= new DataOutputStream(cliente.getOutputStream());
                             op1.writeFloat(ingresos);
+
+                            objetoEntrada = new ObjectInputStream(cliente.getInputStream());
+                            byte[] cuentaCifrada= (byte[]) objetoEntrada.readObject();
+                            while (true) {
+                                try {
+                                    System.out.println("Acaba de recibir un codigo cifrado\n Cod: " +
+                                            cuentaCifrada +"\n"+
+                                            "Si quiere descifrarla y enviarla para verificar que es usted escriba 'si':");
+                                    String respuesta = lectura.next();
+
+                                    if(respuesta.equalsIgnoreCase("si")) {
+                                        rsaCipher.init(Cipher.DECRYPT_MODE, clavepriv);
+                                        String mensajeDescifrado = new String(rsaCipher.doFinal(cuentaCifrada));
+                                        System.out.println(mensajeDescifrado);
+                                        textoSalida= new DataOutputStream(cliente.getOutputStream());
+                                        op1.writeUTF(mensajeDescifrado);
+                                    }else{
+                                        textoSalida= new DataOutputStream(cliente.getOutputStream());
+                                        op1.writeUTF("");
+                                    }
+                                    break;
+                                } catch (NumberFormatException ex) {
+                                    System.out.println("Tienes que escribir un numero");
+                                } catch (Exception e) {
+                                    System.out.println(e.getMessage());
+                                }
+                            }
                             // flujo de entrada que se utiliza para recoger si la nueva cuenta se ha
                             // encontrado correctamente y la muestra
                             textoEntrada = new DataInputStream(cliente.getInputStream());
@@ -409,13 +443,12 @@ public class Cliente {
                                 Cuenta cuenta = (Cuenta) objetoEntrada.readObject();
                                 System.out.println(cuenta.toString());
                             } else {
-                                System.out.println("No se ha encontrado la cuenta");
+                                String text = textoEntrada.readUTF();
+                                System.out.println(text);
                             }
                         }else{
                             System.out.println(c);
                         }
-
-
                         break;
                     }
                     case 5: {
