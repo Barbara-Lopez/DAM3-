@@ -8,6 +8,9 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
+/**
+ * Hilo que se encarga de hacer todo lo del servidor
+ */
 public class Hilo extends Thread {
 
     private static SSLSocket cliente;
@@ -100,6 +103,12 @@ public class Hilo extends Thread {
             throw new RuntimeException(e);
         }
     }
+    /**
+     * Como el nombre de la funcion indica se encarga de recibir la clave publica del cliente
+     * y enviar la suya al clliente
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
     public static void enviarRecibirClavePub() throws IOException, ClassNotFoundException {
         objetoSalida = new ObjectOutputStream(cliente.getOutputStream());
         objetoSalida.writeObject(clavepub);
@@ -109,6 +118,11 @@ public class Hilo extends Thread {
         //System.out.println("Clave cliente:\n"+clavepubClient);
 
     }
+
+    /**
+     * Se encarga de verificar si el fichero donde se guardan los datos existe, si no existe lo crea
+     * @throws IOException
+     */
     public static void verificarFicheroDat() throws IOException {
         // Crea un objeto File con la ruta del archivo
         File archivo = new File("src/files/Clientes.dat");
@@ -124,6 +138,12 @@ public class Hilo extends Thread {
             System.out.println("Archivo cliente creado");
         }
     }
+
+    /**
+     * verifica que el usuario y contraseña que recibimos del cliente sea correcto
+     * @param user
+     * @throws IOException
+     */
     public static void inicioSesion(Usuario user) throws IOException {
 
         File fichero = new File("src/files/Clientes.dat");
@@ -161,6 +181,12 @@ public class Hilo extends Thread {
             textoSalida.writeBoolean(false);
         }
     }
+
+    /**
+     * Guarda el cliente en el caso de que no exista y si el usuario no está repetido
+     * @param cli
+     * @throws IOException
+     */
     public static void crearCuenta(Client cli) throws IOException {
         File fichero = new File("src/files/Clientes.dat");
         FileOutputStream fileout = new FileOutputStream(fichero);
@@ -195,7 +221,11 @@ public class Hilo extends Thread {
             dataIS.close();
         }
         if(c==null){
-            dataOS.writeObject(cli);
+            List<Client> lista= cogerAldeanos();
+            lista.add(cli);
+            for (Client persona:lista) {
+                dataOS.writeObject(persona);
+            }
             textoSalida= new DataOutputStream(cliente.getOutputStream());
             textoSalida.writeBoolean(true);
             textoSalida.writeUTF("Cliente nuevo creado correctamente");
@@ -215,6 +245,36 @@ public class Hilo extends Thread {
         }
         dataOS.close();
     }
+
+    /**
+     * coge todos los usuarios para que al escribir un dato no se sobreescriba
+     * @return
+     * @throws IOException
+     */
+    public static List<Client> cogerAldeanos() throws IOException {
+        File fichero = new File("src/files/Clientes.dat");
+        FileInputStream fileout = new FileInputStream(fichero);
+        ObjectInputStream dataIS = new ObjectInputStream(fileout);
+
+        List<Client> listaper = new ArrayList<>();
+        try {
+            while (true) { //lectura del fichero
+                Client persona= (Client) dataIS.readObject(); //leer una Persona
+                listaper.add(persona); //añaadir persona a la lista
+            }
+        }catch (EOFException eo){} catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        dataIS.close();
+        return listaper;
+    }
+
+    /**
+     * Una vez se inicia sesión correctamente hace que las operaciones se guarden en los ficheros
+     * de esa manera tenemos la información actualizada
+     */
     public static void operacionesCuenta(){
 
         do {
@@ -249,10 +309,10 @@ public class Hilo extends Thread {
                                 }
                             }
                         }
-                        System.out.println(numCuenta);
+                        //System.out.println(numCuenta);
                         Cuenta c=new Cuenta(numCuenta, 00.00F);
                         clienteEnSesion.addCuentas(c);
-                        System.out.println(clienteEnSesion.getCuentas());
+                        //System.out.println(clienteEnSesion.getCuentas());
                         modClient();
                         textoSalida= new DataOutputStream(cliente.getOutputStream());
                         textoSalida.writeBoolean(true);

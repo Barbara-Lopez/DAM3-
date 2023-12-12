@@ -13,6 +13,9 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Se encarga de ejecutar lo que el cliente necesita para poder hacer las operaciones
+ */
 public class Cliente {
     private static PublicKey clavepubServer;
     private static SSLSocket cliente;
@@ -25,7 +28,10 @@ public class Cliente {
     private static DataOutputStream textoSalida;
     private static DataInputStream textoEntrada;
 
-
+    /**
+     *
+     * @param args
+     */
     public static void main(String[] args) {
         System.setProperty("javax.net.ssl.trustStore", "src/files/UsuarioAlmacenSSL");
         System.setProperty("javax.net.ssl.trustStorePassword", "890123");
@@ -135,6 +141,13 @@ public class Cliente {
             throw new RuntimeException(e);
         }
     }
+
+    /**
+     * Como el nombre de la funcion indica se encarga de recibir la clave publica del servidor
+     * y enviar la suya al servidor
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
     public static void enviarRecibirClavePub() throws IOException, ClassNotFoundException {
         objetoEntrada=new ObjectInputStream(cliente.getInputStream());
         clavepubServer= (PublicKey) objetoEntrada.readObject();
@@ -143,6 +156,12 @@ public class Cliente {
         objetoSalida.writeObject(clavepub);
         //System.out.println("Clave cliente:\n"+clavepub);
     }
+
+    /**
+     * Envia al servidor el usuario y contraseña que nos teclean
+     * @throws IOException
+     * @throws NoSuchAlgorithmException
+     */
     public static void inicioSesion() throws IOException, NoSuchAlgorithmException {
         String user;
         while (true) {
@@ -172,6 +191,12 @@ public class Cliente {
         objetoSalida = new ObjectOutputStream(cliente.getOutputStream());
         objetoSalida.writeObject(u);
     }
+
+    /**
+     * Se encarga de enviar al servidor toda la informacion del cliente que nosteclean
+     * @throws NoSuchAlgorithmException
+     * @throws IOException
+     */
     public static void crearCuenta() throws NoSuchAlgorithmException, IOException {
         String nombre;
         while (true) {
@@ -266,6 +291,10 @@ public class Cliente {
         objetoSalida = new ObjectOutputStream(cliente.getOutputStream());
         objetoSalida.writeObject(c);
     }
+
+    /**
+     * Una vez inician sesión se encarga de hacer que las operaciones que quiere el usuario se envien al servidor
+     */
     public static void operacionesCuenta(){
         int op = 0;
         do {

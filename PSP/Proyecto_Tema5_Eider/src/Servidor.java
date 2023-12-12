@@ -8,13 +8,22 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.security.*;
 
+/**
+ * Se encarga de ejecutar todo lo necesario para que el servidor funcione
+ */
 public class Servidor {
     static final int PUERTO = 5000;
     private static ServerSocket Servidor;
     private static Socket socket;
 
 
-
+    /**
+     *
+     * @param args
+     * @throws IOException
+     * @throws ClassNotFoundException
+     * @throws NoSuchAlgorithmException
+     */
     public static void main(String[] args) throws IOException, ClassNotFoundException, NoSuchAlgorithmException {
         System.out.println("Incializando servidor");
 
