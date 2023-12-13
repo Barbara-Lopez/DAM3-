@@ -386,10 +386,9 @@ public class Hilo extends Thread {
                         break;
                     }
                     case 4: {
-                        System.out.println("punto 4");
                         String cuentas="";
                         if(clienteEnSesion.getCuentas().isEmpty()){
-                            log(clienteEnSesion.getUser().getUsuario()+" ha intentado hacer transferencias pero no tirnr ninguna cuenta hecha");
+                            log(clienteEnSesion.getUser().getUsuario()+" ha intentado hacer transferencias pero no tiene ninguna cuenta hecha");
                             cuentas="No hay cuentas crea una";
                             textoSalida= new DataOutputStream(cliente.getOutputStream());
                             textoSalida.writeBoolean(false);
@@ -440,11 +439,11 @@ public class Hilo extends Thread {
                                         break;
                                     }
                                 }
-                                System.out.println(clienteEnSesion.getCuentas());
+                                //System.out.println(clienteEnSesion.getCuentas());
                                 modClient();
                                 textoSalida = new DataOutputStream(cliente.getOutputStream());
                                 if (verCuenta == null) {
-                                    log(clienteEnSesion.getUser().getUsuario()+" ha intentado hacer una tranferencia");
+                                    log(clienteEnSesion.getUser().getUsuario()+" ha intentado ingresar dinero");
                                     System.out.println("Cuenta NO encontrada");
                                     textoSalida.writeBoolean(false);
                                     textoSalida.writeUTF("Cuenta NO encontrada");
@@ -452,11 +451,11 @@ public class Hilo extends Thread {
                                     textoSalida.writeBoolean(true);
                                     objetoSalida = new ObjectOutputStream(cliente.getOutputStream());
                                     objetoSalida.writeObject(verCuenta);
-                                    log(clienteEnSesion.getUser().getUsuario()+" ha hecho una transferencia a la cuenta "+verCuenta.getNumeroCuenta()
+                                    log(clienteEnSesion.getUser().getUsuario()+" ha hecho un ingreso a la cuenta "+verCuenta.getNumeroCuenta()
                                      +" de "+saldo+" y ahora tiene " +verCuenta.getSaldo());
                                 }
                             }else{
-                                log(clienteEnSesion.getUser().getUsuario()+" ha intentado hacer una tranferencia");
+                                log(clienteEnSesion.getUser().getUsuario()+" ha intentado ingresar dinero");
                                 textoSalida = new DataOutputStream(cliente.getOutputStream());
                                 textoSalida.writeBoolean(false);
                                 textoSalida.writeUTF("El codigo descifrado no es correcto");
@@ -465,7 +464,121 @@ public class Hilo extends Thread {
 
                         break;
                     }
-                    case 5: {
+                    case 5:{
+                        String cuentas="";
+                        if(clienteEnSesion.getCuentas().isEmpty()){
+                            log(clienteEnSesion.getUser().getUsuario()+" ha intentado hacer transferencias pero no tiene ninguna cuenta hecha");
+                            cuentas="No hay cuentas crea una";
+                            textoSalida= new DataOutputStream(cliente.getOutputStream());
+                            textoSalida.writeBoolean(false);
+                            textoSalida.writeUTF(cuentas);
+                        }else if(clienteEnSesion.getCuentas().size()<2){
+                            log(clienteEnSesion.getUser().getUsuario()+" ha intentado hacer transferencias pero no tiene dos cuentas para hacerlo");
+                            cuentas="No hay dos cuentas para poder hacer la trasfencia de una a otra";
+                            textoSalida= new DataOutputStream(cliente.getOutputStream());
+                            textoSalida.writeBoolean(false);
+                            textoSalida.writeUTF(cuentas);
+                        }else {
+                            for (Cuenta c : clienteEnSesion.getCuentas()) {
+                                cuentas += c.getNumeroCuenta() + ", ";
+                            }
+                            textoSalida = new DataOutputStream(cliente.getOutputStream());
+                            textoSalida.writeBoolean(true);
+                            textoSalida.writeUTF(cuentas);
+
+                            objetoEntrada = new ObjectInputStream(cliente.getInputStream());
+                            byte[] cuenta1 = (byte[]) objetoEntrada.readObject();
+
+                            objetoEntrada = new ObjectInputStream(cliente.getInputStream());
+                            byte[] cuenta2 = (byte[]) objetoEntrada.readObject();
+
+                            textoEntrada = new DataInputStream(cliente.getInputStream());
+                            Float saldo = op2.readFloat();
+
+
+                            Random random = new Random();
+                            int lowerBound = 0;
+                            int upperBound = 9;
+                            String cod = "";
+                            for (int i = 0; i < 4; i++) {
+                                int randomNumber = random.nextInt(upperBound - lowerBound + 1) + lowerBound;
+                                cod += randomNumber;
+                            }
+                            //System.out.println(cod);
+                            rsaCipher.init(Cipher.ENCRYPT_MODE, clavepubClient);
+                            byte[] cifrado = rsaCipher.doFinal(cod.getBytes());
+                            objetoSalida = new ObjectOutputStream(cliente.getOutputStream());
+                            objetoSalida.writeObject(cifrado);
+
+
+                            textoEntrada = new DataInputStream(cliente.getInputStream());
+                            String codDescifrado = op2.readUTF();
+
+                            if (cod.equals(codDescifrado)) {
+
+                                rsaCipher.init(Cipher.DECRYPT_MODE, clavepriv);
+                                String cuenta1Descifrado = new String(rsaCipher.doFinal(cuenta1));
+                                String cuenta2Descifrado = new String(rsaCipher.doFinal(cuenta2));
+                                Cuenta modCuenta1 = null;
+                                Cuenta modCuenta2 = null;
+                                Boolean posibleTransferencia=true;
+                                for (Cuenta c : clienteEnSesion.getCuentas()) {
+                                    if (c.getNumeroCuenta().equals(cuenta1Descifrado)) {
+                                        if(c.getSaldo()-saldo<0){
+                                            posibleTransferencia=false;
+                                            modCuenta1 = c;
+                                        }else{
+                                            c.setSaldo(c.getSaldo() - saldo);
+                                            modCuenta1 = c;
+                                        }
+
+                                    }
+                                    if (c.getNumeroCuenta().equals(cuenta2Descifrado)) {
+                                        if(posibleTransferencia){
+                                            c.setSaldo(c.getSaldo() + saldo);
+                                            modCuenta2 = c;
+                                        }else{
+                                            modCuenta2 = c;
+                                        }
+
+                                    }
+                                }
+                                //System.out.println(clienteEnSesion.getCuentas());
+                                modClient();
+                                textoSalida = new DataOutputStream(cliente.getOutputStream());
+                                if (modCuenta1 == null && modCuenta2 == null) {
+                                    log(clienteEnSesion.getUser().getUsuario()+" ha intentado hacer una tranferencia");
+                                    System.out.println("Cuentas NO encontradas");
+                                    textoSalida.writeBoolean(false);
+                                    textoSalida.writeUTF("Cuentas NO encontradas");
+                                } else {
+                                    List<Cuenta> listaCuentas= new ArrayList<>();
+                                    listaCuentas.add(modCuenta1);
+                                    listaCuentas.add(modCuenta2);
+                                    if(posibleTransferencia){
+                                        textoSalida.writeBoolean(true);
+                                        objetoSalida = new ObjectOutputStream(cliente.getOutputStream());
+                                        objetoSalida.writeObject(listaCuentas);
+                                        log(clienteEnSesion.getUser().getUsuario()+" ha hecho una transferencia desde la cuenta "+modCuenta1.getNumeroCuenta()
+                                            +" a la cuenta " +modCuenta2.getNumeroCuenta());
+                                    }else{
+                                        textoSalida.writeBoolean(false);
+                                        textoSalida.writeUTF("Se ha intentado hacer una transferencia desde la cuenta "+modCuenta1.getNumeroCuenta()
+                                                +" a la cuenta " +modCuenta2.getNumeroCuenta()+", pero \n el saldo que quiere transferir desde la primera cuenta ("+saldo+") a la segunda supera lo que tiene guardado ("+modCuenta1.getSaldo()+") con lo que no se ha podido hacer");
+                                        log(clienteEnSesion.getUser().getUsuario()+" ha intentado hacer una transferencia desde la cuenta "+modCuenta1.getNumeroCuenta()
+                                                +" a la cuenta " +modCuenta2.getNumeroCuenta());
+                                    }
+                                }
+                            }else{
+                                log(clienteEnSesion.getUser().getUsuario()+" ha intentado hacer una tranferencia");
+                                textoSalida = new DataOutputStream(cliente.getOutputStream());
+                                textoSalida.writeBoolean(false);
+                                textoSalida.writeUTF("El codigo descifrado no es correcto");
+                            }
+                        }
+                        break;
+                    }
+                    case 6: {
                         log(clienteEnSesion.getUser().getUsuario()+" ha salido de las operaciones ");
                         System.out.println(clienteEnSesion.getNombre()+" Sale de las operaciones de la app");
                         break;
@@ -477,7 +590,7 @@ public class Hilo extends Thread {
             } catch (Exception e){
                 System.out.println(e.getMessage());
             }
-        } while (opcion2!=5);
+        } while (opcion2!=6);
 
     }
 
@@ -512,7 +625,7 @@ public class Hilo extends Thread {
 
             if (clienteexiste > 0) {
                 crearNuevoCliente();
-                ListadoNuevo(c);
+                ListadoNuevo();
             } else {
                 System.out.println("===================================");
                 System.out.println("El cliente no existe");
@@ -546,7 +659,7 @@ public class Hilo extends Thread {
         dataOS.close(); // cerrar stream de SALIDA
     }// fin Crear Nuevo Dep
 
-    public static void ListadoNuevo(Client client) throws IOException {
+    public static void ListadoNuevo() throws IOException {
         File fichero = new File("src/files/Clientes.dat");
         FileInputStream filein = new FileInputStream(fichero);
         ObjectInputStream dataIS = new ObjectInputStream(filein);
@@ -554,7 +667,7 @@ public class Hilo extends Thread {
         try {
             while (true) {
                 Client a = (Client) dataIS.readObject();
-                if (Objects.equals(a.getNombre(), client.getNombre()) && Objects.equals(a.getApellido(), client.getApellido()) ) {
+                if (Objects.equals(a.getNombre(), clienteEnSesion.getNombre()) && Objects.equals(a.getApellido(), clienteEnSesion.getApellido()) ) {
                     System.out.println(a.toString());
                 }
             }

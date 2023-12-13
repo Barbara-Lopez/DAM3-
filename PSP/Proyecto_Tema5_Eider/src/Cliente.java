@@ -8,6 +8,7 @@ import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 import java.io.*;
 import java.security.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Matcher;
@@ -303,7 +304,7 @@ public class Cliente {
         do {
             try {
                 System.out.println("Elija lo que quiere hacer: \n 1.Crear cuenta bancaria \n 2.Ver saldo de una cuenta bancaria " +
-                        "\n 3.Mirar el registro de operaciones hechas \n 4.Hacer transferencia \n 5.Salir");
+                        "\n 3.Mirar el registro de operaciones hechas \n 4.Ingresar dinero \n 5.Hacer transferencia \n 6.Salir");
                 op = Integer.parseInt(lectura.next());
                 switch(op){
                     case 1: {
@@ -395,7 +396,7 @@ public class Cliente {
                         if(ok) {
                             while (true) {
                                 try {
-                                    String text = "Elija una de las cuentas (escriba el numero al lado del numero de la cuenta):\n";
+                                    String text = "Elija una de las cuentas a ingresar dinero (escriba el numero al lado del numero de la cuenta):\n";
                                     String[] listaCuenta = c.split(", ");
                                     for (int i = 0; i < listaCuenta.length; i++) {
                                         text += i + ". " + listaCuenta[i] + "\n";
@@ -452,7 +453,7 @@ public class Cliente {
                                     if(respuesta.equalsIgnoreCase("si")) {
                                         rsaCipher.init(Cipher.DECRYPT_MODE, clavepriv);
                                         String mensajeDescifrado = new String(rsaCipher.doFinal(cuentaCifrada));
-                                        System.out.println(mensajeDescifrado);
+                                        System.out.println("Cod descifrado: "+mensajeDescifrado);
                                         textoSalida= new DataOutputStream(cliente.getOutputStream());
                                         op1.writeUTF(mensajeDescifrado);
                                     }else{
@@ -487,6 +488,140 @@ public class Cliente {
                         // ENviar al servidor que opcion ha elegido
                         DataOutputStream  op1= new DataOutputStream(cliente.getOutputStream());
                         op1.writeInt(5);
+                        // elegir la cuenta
+                        textoEntrada =new DataInputStream(cliente.getInputStream());
+                        Boolean ok= textoEntrada.readBoolean();
+                        String c= textoEntrada.readUTF();
+                        if(ok) {
+                            String[] listaCuenta = c.split(", ");
+                            ArrayList<String> lista = new ArrayList<>(java.util.Arrays.asList(listaCuenta));
+                            String cuenta1="";
+                            while (true) {
+                                try {
+                                    String text = "Elija una de las cuentas desde donde quiere hacer la transferencia  (escriba el numero al lado del numero de la cuenta):\n";
+
+                                    for (int i = 0; i < listaCuenta.length; i++) {
+                                        text += i + ". " + listaCuenta[i] + "\n";
+                                    }
+                                    System.out.println(text);
+                                    Integer cuenta = Integer.parseInt(lectura.next());
+                                    if (cuenta < listaCuenta.length) {
+                                        String numCuenta = listaCuenta[cuenta];
+                                        rsaCipher.init(Cipher.ENCRYPT_MODE, clavepubServer);
+                                        byte[] cifrado = rsaCipher.doFinal(numCuenta.getBytes());
+                                        objetoSalida = new ObjectOutputStream(cliente.getOutputStream());
+                                        objetoSalida.writeObject(cifrado);
+                                        if (lista.contains(listaCuenta[cuenta])) {
+                                            // Eliminar el elemento
+                                            cuenta1 =listaCuenta[cuenta];
+                                            lista.remove(listaCuenta[cuenta]);
+                                            //System.out.println("Elemento eliminado: " + listaCuenta[cuenta]);
+                                        }
+                                        break;
+                                    } else {
+                                        throw new Exception("Escriba uno de los numeros al lado del numero de la cuenta");
+                                    }
+                                } catch (NumberFormatException ex) {
+                                    System.out.println("Tienes que escribir un numero");
+                                } catch (Exception e) {
+                                    System.out.println(e.getMessage());
+                                }
+                            }
+                            while (true) {
+                                try {
+                                    String text = "Elija una de las cuentas a las que le quiere hacer la transferencia desde la cuenta "+cuenta1+"  (escriba el numero al lado del numero de la cuenta):\n";
+                                    for (int i = 0; i < lista.size(); i++) {
+                                        text += i + ". " + lista.get(i) + "\n";
+                                    }
+                                    System.out.println(text);
+                                    Integer cuenta = Integer.parseInt(lectura.next());
+                                    if (cuenta < listaCuenta.length) {
+                                        String numCuenta = lista.get(cuenta);
+                                        rsaCipher.init(Cipher.ENCRYPT_MODE, clavepubServer);
+                                        byte[] cifrado = rsaCipher.doFinal(numCuenta.getBytes());
+                                        objetoSalida = new ObjectOutputStream(cliente.getOutputStream());
+                                        objetoSalida.writeObject(cifrado);
+                                        break;
+                                    } else {
+                                        throw new Exception("Escriba uno de los numeros al lado del numero de la cuenta");
+                                    }
+                                } catch (NumberFormatException ex) {
+                                    System.out.println("Tienes que escribir un numero");
+                                } catch (Exception e) {
+                                    System.out.println(e.getMessage());
+                                }
+                            }
+                            Float ingresos = null;
+                            while (true) {
+                                try {
+                                    System.out.println("Escriba en numeros cual es la cantidad que quiere transferir:");
+                                    String saldo = lectura.next();
+                                    Pattern p = Pattern.compile("^[0-9]{1,3}.[0-9]{2}$");
+                                    Matcher m = p.matcher(saldo);
+                                    if(m.find()) {
+                                        ingresos= Float.valueOf(saldo);
+                                        break;
+                                    }else{
+                                        throw new Exception("Tiene que escribir '0.00' o '00.00' ");
+                                    }
+                                } catch (NumberFormatException ex) {
+                                    System.out.println("Tienes que escribir un numero");
+                                } catch (Exception e) {
+                                    System.out.println(e.getMessage());
+                                }
+                            }
+                            textoSalida= new DataOutputStream(cliente.getOutputStream());
+                            op1.writeFloat(ingresos);
+
+                            objetoEntrada = new ObjectInputStream(cliente.getInputStream());
+                            byte[] cuentaCifrada= (byte[]) objetoEntrada.readObject();
+                            while (true) {
+                                try {
+                                    System.out.println("Acaba de recibir un codigo cifrado\n Cod: " +
+                                            cuentaCifrada +"\n"+
+                                            "Si quiere descifrarla y enviarla para verificar que es usted escriba 'si':");
+                                    String respuesta = lectura.next();
+
+                                    if(respuesta.equalsIgnoreCase("si")) {
+                                        rsaCipher.init(Cipher.DECRYPT_MODE, clavepriv);
+                                        String mensajeDescifrado = new String(rsaCipher.doFinal(cuentaCifrada));
+                                        System.out.println("Cod descifrado: "+mensajeDescifrado);
+                                        textoSalida= new DataOutputStream(cliente.getOutputStream());
+                                        op1.writeUTF(mensajeDescifrado);
+                                    }else{
+                                        textoSalida= new DataOutputStream(cliente.getOutputStream());
+                                        op1.writeUTF("");
+                                    }
+                                    break;
+                                } catch (NumberFormatException ex) {
+                                    System.out.println("Tienes que escribir un numero");
+                                } catch (Exception e) {
+                                    System.out.println(e.getMessage());
+                                }
+                            }
+                            // flujo de entrada que se utiliza para recoger si la nueva cuenta se ha
+                            // encontrado correctamente y la muestra
+                            textoEntrada = new DataInputStream(cliente.getInputStream());
+                            Boolean inicioOk = textoEntrada.readBoolean();
+                            if (inicioOk) {
+                                objetoEntrada = new ObjectInputStream(cliente.getInputStream());
+                                List<Cuenta> cuentas = (List<Cuenta>) objetoEntrada.readObject();
+                                for (Cuenta cuenta:cuentas) {
+                                    System.out.println(cuenta.toString());
+                                }
+                            } else {
+                                String text = textoEntrada.readUTF();
+                                System.out.println(text);
+                            }
+                        }else{
+                            System.out.println(c);
+                        }
+                        break;
+                    }
+                    case 6: {
+                        // ENviar al servidor que opcion ha elegido
+                        DataOutputStream  op1= new DataOutputStream(cliente.getOutputStream());
+                        op1.writeInt(6);
                         break;
                     }
                     default:
@@ -498,7 +633,7 @@ public class Cliente {
             } catch (Exception e){
                 System.out.println(e.getMessage());
             }
-        } while (op!=5);
+        } while (op!=6);
 
     }
 }
