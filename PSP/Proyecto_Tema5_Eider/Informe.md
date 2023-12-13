@@ -8,7 +8,10 @@ cliente despues de que salga el primer menú.
 
     -  El principal: 
    
-        - Inicio sesión  ->
-        - Crear cuenta 
-        - Salir
-        - 
+        - Inicio sesión  -> Inicias sesión y si no firmas no te deja ir a las operaciones
+        - Crear cuenta -> Crea una nueva cuenta para poder luego iniciar sesion
+        - Salir -> Sales de la aplicacion
+    -  El secundario(Una vez inicias sesión):
+   
+        -  Crear una cuenta bancaria -> te crea una cuenta y la guarda en el .dat
+        - Ver saldo de una cuenta bancaria
