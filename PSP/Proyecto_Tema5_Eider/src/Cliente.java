@@ -248,7 +248,10 @@ public class Cliente {
                         + "[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$");
                 Matcher m = p.matcher(email);
                 if(!m.find()){
-                    throw new Exception("El email escrito no es correcto tiene que ser ' '@' '.'' o ' '.' '@' '.' ', vuelva ha escribirlo");
+                    throw new Exception("El email escrito no es correcto, tiene que ser: \n " +
+                            " 1. 'nimino de 1 caracter'@'nimino de 2 caracteres'.'minimo de 2 caracteres'\n" +
+                            " 2. 'nimino de 1 caracter'.'nimino de 1 caracter'@'minimo de 2 caracteres'.'minimo de 2 caracteres' \n" +
+                            " vuelva ha escribirlo");
                 }
                 break;
             }catch (Exception e) {

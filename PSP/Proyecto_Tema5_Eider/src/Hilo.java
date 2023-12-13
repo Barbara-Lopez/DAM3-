@@ -132,9 +132,9 @@ public class Hilo extends Thread {
             System.out.println("Archivo cliente encontrado");
         } else {
             System.out.println("Archivo cliente no encontrado, se va ha proceder a crearlo");
-            FileOutputStream fos = new FileOutputStream(archivo);
-            // Cierra el flujo de salida
-            fos.close();
+            FileOutputStream fileout = new FileOutputStream(archivo);
+            ObjectOutputStream dataOS = new ObjectOutputStream(fileout);
+            dataOS.close();
             System.out.println("Archivo cliente creado");
         }
     }
@@ -188,21 +188,51 @@ public class Hilo extends Thread {
      * @throws IOException
      */
     public static void crearCuenta(Client cli) throws IOException {
+        List resultado=verificarcliente(cli);
+        Client c= (Client) resultado.get(0);
+        Boolean clienteRepe= (Boolean) resultado.get(1);
+        Boolean userNombreRepe= (Boolean) resultado.get(2);
+
+        List<Client> lista= cogerClientes();
+
+
+        if(c==null){
+            File fichero = new File("src/files/Clientes.dat");
+            FileOutputStream fileout = new FileOutputStream(fichero);
+            ObjectOutputStream dataOS=new ObjectOutputStream(fileout);
+            lista.add(cli);
+            for (Client persona:lista) {
+                dataOS.writeObject(persona);
+            }
+            dataOS.close();
+            textoSalida= new DataOutputStream(cliente.getOutputStream());
+            textoSalida.writeBoolean(true);
+            textoSalida.writeUTF("Cliente nuevo creado correctamente");
+            sesionIniciada=true;
+        }else{
+            textoSalida= new DataOutputStream(cliente.getOutputStream());
+            textoSalida.writeBoolean(false);
+            if(clienteRepe){
+                textoSalida.writeUTF("El cliente que quiere crear ya está guardado, " +
+                        "si quiere crear uno nuevo escribalo con otro nombre o apellido");
+            }else if(userNombreRepe){
+                textoSalida.writeUTF("El cliente que quiere crear tiene un nombre de usuario ya existenete," +
+                        "si quiere crear el usuario escribalo con un nombre de usuario diferente");
+            }
+        }
+
+    }
+    public static List verificarcliente(Client cli) throws IOException {
         File fichero = new File("src/files/Clientes.dat");
-        FileOutputStream fileout = new FileOutputStream(fichero);
-        ObjectOutputStream dataOS=new ObjectOutputStream(fileout);
-        FileInputStream filein;
-        ObjectInputStream dataIS = null;
+        FileInputStream fileout = new FileInputStream(fichero);
+        ObjectInputStream dataIS = new ObjectInputStream(fileout);
         Client c= null;
         Boolean clienteRepe=false;
         Boolean userNombreRepe=false;
         try {
-            filein = new FileInputStream(fichero);
-            dataIS = new ObjectInputStream(filein);
-
             while (dataIS.available() != -1 ) {
                 Client client= (Client) dataIS.readObject();
-                System.out.println(client);
+                //System.out.println(client);
                 if(client.getNombre().equalsIgnoreCase(cli.getNombre()) && client.getApellido().equalsIgnoreCase(cli.getApellido())){
                     c=client;
                     clienteRepe = true;
@@ -213,37 +243,18 @@ public class Hilo extends Thread {
                     userNombreRepe = true;
                     break;
                 }
-            }
-        }catch (EOFException eo){} catch (IOException | ClassNotFoundException e) {
-            System.out.println("No hay nada");
-        }
-        if(dataIS!=null){
-            dataIS.close();
-        }
-        if(c==null){
-            List<Client> lista= cogerAldeanos();
-            lista.add(cli);
-            for (Client persona:lista) {
-                dataOS.writeObject(persona);
-            }
-            textoSalida= new DataOutputStream(cliente.getOutputStream());
-            textoSalida.writeBoolean(true);
-            textoSalida.writeUTF("Cliente nuevo creado correctamente");
-            sesionIniciada=true;
-        }else{
 
-            textoSalida= new DataOutputStream(cliente.getOutputStream());
-            textoSalida.writeBoolean(false);
-            if(clienteRepe){
-                textoSalida.writeUTF("El cliente que quiere crear ya está guardado, " +
-                        "si quiere crear uno nuevo escribalo con otro nombre o apellido");
             }
-            if(userNombreRepe){
-                textoSalida.writeUTF("El cliente que quiere crear tiene un nombre de usuario ya existenete," +
-                        "si quiere crear el usuario escribalo con un nombre de usuario diferente");
-            }
-        }
-        dataOS.close();
+
+        }catch (EOFException | ClassNotFoundException eo){}
+
+        dataIS.close();
+        List<Object> resultado=new ArrayList<>();
+        resultado.add(c);
+        resultado.add(clienteRepe);
+        resultado.add(userNombreRepe);
+        //System.out.println(c.toString()+"\n Cliente repe: "+clienteRepe+", nombre user: "+userNombreRepe);
+        return resultado;
     }
 
     /**
@@ -251,7 +262,7 @@ public class Hilo extends Thread {
      * @return
      * @throws IOException
      */
-    public static List<Client> cogerAldeanos() throws IOException {
+    public static List<Client> cogerClientes() throws IOException {
         File fichero = new File("src/files/Clientes.dat");
         FileInputStream fileout = new FileInputStream(fichero);
         ObjectInputStream dataIS = new ObjectInputStream(fileout);
@@ -260,7 +271,8 @@ public class Hilo extends Thread {
         try {
             while (true) { //lectura del fichero
                 Client persona= (Client) dataIS.readObject(); //leer una Persona
-                listaper.add(persona); //añaadir persona a la lista
+                listaper.add(persona);
+                //añaadir persona a la lista
             }
         }catch (EOFException eo){} catch (IOException e) {
             throw new RuntimeException(e);
