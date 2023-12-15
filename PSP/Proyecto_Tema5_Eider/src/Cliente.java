@@ -194,7 +194,7 @@ public class Cliente {
     }
 
     /**
-     * Se encarga de enviar al servidor toda la informacion del cliente que nosteclean
+     * Se encarga de enviar al servidor toda la información del cliente que nosteclean
      * @throws NoSuchAlgorithmException
      * @throws IOException
      */

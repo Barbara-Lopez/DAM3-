@@ -31,6 +31,9 @@ public class Hilo extends Thread {
 
     }
 
+    /**
+     * Hace lo que tiene que hacer el servidor por cada cliente que se una
+     */
     public void run() {
 
         try{
@@ -222,6 +225,13 @@ public class Hilo extends Thread {
         }
 
     }
+
+    /**
+     * Verifica si el cliente ya está creado o si el cliente que quiere añadir se añade con un usuario repetido
+     * @param cli
+     * @return
+     * @throws IOException
+     */
     public static List verificarcliente(Client cli) throws IOException {
         File fichero = new File("src/files/Clientes.dat");
         FileInputStream fileout = new FileInputStream(fichero);
@@ -594,12 +604,16 @@ public class Hilo extends Thread {
 
     }
 
+    /**
+     * Modifica el cliente que queremos y guarda lo modificado en el .dat auxiliar
+     * @throws IOException
+     */
     public static void modClient() throws IOException {
         Client c = null;
         File fichero = new File("src/files/Clientes.dat");
         FileInputStream filein = new FileInputStream(fichero);
         ObjectInputStream dataIS = new ObjectInputStream(filein);
-        // aqui estaran los nuevos datos
+        // aquí estaran los nuevos datos
         File ficheroaux = new File("src/files/AuxClientes.dat");
         FileOutputStream fileout = new FileOutputStream(ficheroaux);
         ObjectOutputStream dataOS = new ObjectOutputStream(fileout);
@@ -633,6 +647,11 @@ public class Hilo extends Thread {
             }
         }
     }
+
+    /**
+     * Modifica el cliente después de guardarlo en él .dat auxiliar
+     * @throws IOException
+     */
     public static void crearNuevoCliente() throws IOException {
         Client c;
         // Leo auxiliar e inserto en Departamentos
@@ -659,6 +678,10 @@ public class Hilo extends Thread {
         dataOS.close(); // cerrar stream de SALIDA
     }// fin Crear Nuevo Dep
 
+    /**
+     * Listado después de que el .dat se modifique
+     * @throws IOException
+     */
     public static void ListadoNuevo() throws IOException {
         File fichero = new File("src/files/Clientes.dat");
         FileInputStream filein = new FileInputStream(fichero);
@@ -676,6 +699,12 @@ public class Hilo extends Thread {
 
         dataIS.close(); //Cerramos el flujo de entrada
     }
+
+    /**
+     * Añade al log una línea de lo último que ha hecho
+     * @param testo
+     * @throws IOException
+     */
     public static void log(String testo) throws IOException {
         // Crea un objeto File con la ruta del archivo
         File archivo = new File("src/files/"+clienteEnSesion.getUser().getUsuario()+"log");
@@ -697,6 +726,11 @@ public class Hilo extends Thread {
         f.write(text);
         f.close();
     }
+
+    /**
+     * Coge lo que haya en el log de cada cliente
+     * @return
+     */
     public static String cogerLog(){
         String text="";
         try {
