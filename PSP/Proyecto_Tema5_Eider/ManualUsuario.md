@@ -23,3 +23,5 @@ cliente después de que salga el primer menú.
        cantidad de dinero quieres meter en la cuenta tienes que verificar que eres tú el que quiere ingresar el dinero
         - Hacer transferencia -> se envia desde donde a donde quieres hacer la transferencia y como en el apartado de ingresar datos
           tienes que verificar que eres tú el que quiere hacer la transferencia
+- Los usuarios puedes verlos en cuentas.png la imagen que está arriba de este documento. La contraseña en todos es 12345
+- En el caso de querer otro cliente siempre puedes crear otro con el usuario diferente.

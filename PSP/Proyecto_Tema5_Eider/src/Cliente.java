@@ -30,7 +30,7 @@ public class Cliente {
     private static DataInputStream textoEntrada;
 
     /**
-     *
+     * Todo lo que tiene que hacer el cliente
      * @param args
      */
     public static void main(String[] args) {

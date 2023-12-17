@@ -144,7 +144,7 @@ public class Hilo extends Thread {
 
     /**
      * verifica que el usuario y contraseña que recibimos del cliente sea correcto
-     * @param user
+     * @param user usuario
      * @throws IOException
      */
     public static void inicioSesion(Usuario user) throws IOException {
