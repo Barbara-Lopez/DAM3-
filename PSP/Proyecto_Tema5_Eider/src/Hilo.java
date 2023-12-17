@@ -52,10 +52,13 @@ public class Hilo extends Thread {
                     sesionIniciada=false;
                     switch(opcion1){
                         case 1: {
+                            System.out.println("iniciando sesion");
                             objetoEntrada =new ObjectInputStream(cliente.getInputStream());
                             Usuario user =(Usuario) objetoEntrada.readObject();
+                            System.out.println("verificando");
                             inicioSesion(user);
                             if(sesionIniciada){
+                                System.out.println("Sesion iniciada correctamente");
                                 log(clienteEnSesion.getUser().getUsuario()+" ha iniciado sesión ");
                                 textoSalida= new DataOutputStream(cliente.getOutputStream());
                                 textoSalida.writeUTF("Tiene que firmar este texto para poder hacer cualquier " +
@@ -79,12 +82,15 @@ public class Hilo extends Thread {
                                     textoSalida= new DataOutputStream(cliente.getOutputStream());
                                     textoSalida.writeBoolean(false);
                                 }
+                            }else{
+                                System.out.println("Sesion no iniciada");
                             }
                             break;
                         }
                         case 2: {
                             objetoEntrada =new ObjectInputStream(cliente.getInputStream());
                             Client cli =(Client) objetoEntrada.readObject();
+                            System.out.println("Creando cliente");
                             crearCuenta(cli);
                             break;
                         }
@@ -192,6 +198,7 @@ public class Hilo extends Thread {
      */
     public static void crearCuenta(Client cli) throws IOException {
         List resultado=verificarcliente(cli);
+        System.out.println("Verificando cliente");
         Client c= (Client) resultado.get(0);
         Boolean clienteRepe= (Boolean) resultado.get(1);
         Boolean userNombreRepe= (Boolean) resultado.get(2);
@@ -212,15 +219,18 @@ public class Hilo extends Thread {
             textoSalida.writeBoolean(true);
             textoSalida.writeUTF("Cliente nuevo creado correctamente");
             sesionIniciada=true;
+            System.out.println("Cliente creado correctamente");
         }else{
             textoSalida= new DataOutputStream(cliente.getOutputStream());
             textoSalida.writeBoolean(false);
             if(clienteRepe){
                 textoSalida.writeUTF("El cliente que quiere crear ya está guardado, " +
                         "si quiere crear uno nuevo escribalo con otro nombre o apellido");
+                System.out.println("Cliente repe");
             }else if(userNombreRepe){
                 textoSalida.writeUTF("El cliente que quiere crear tiene un nombre de usuario ya existenete," +
                         "si quiere crear el usuario escribalo con un nombre de usuario diferente");
+                System.out.println("Usuario Cliente repe");
             }
         }
 
@@ -305,7 +315,7 @@ public class Hilo extends Thread {
                 opcion2= op2.readInt();
                 switch(opcion2){
                     case 1: {
-                        System.out.println("opcion 1");
+                        System.out.println("opcion 1, creando cuenta");
                         Random random = new Random();
                         int lowerBound = 0;
                         int upperBound = 9;
@@ -341,10 +351,11 @@ public class Hilo extends Thread {
                         objetoSalida = new ObjectOutputStream(cliente.getOutputStream());
                         objetoSalida.writeObject(c);
                         log(clienteEnSesion.getUser().getUsuario()+" ha creado una nueva cuenta bancaria, "+c.getNumeroCuenta());
+                        System.out.println("cuenta Creada y guardada correctamente");
                         break;
                     }
                     case 2: {
-                        //System.out.println("opcion 2");
+                        System.out.println("opcion 2, verificando cuentas");
                         String cuentas="";
                         if(clienteEnSesion.getCuentas().isEmpty()){
                             log(clienteEnSesion.getUser().getUsuario()+" ha intentado mirar el saldo de una cuenta pero no tiene ninguna");
@@ -353,7 +364,9 @@ public class Hilo extends Thread {
                             textoSalida.writeBoolean(false);
 
                             textoSalida.writeUTF(cuentas);
+                            System.out.println("no hay cuentas");
                         }else{
+                            System.out.println("Almacenando y enviando cuentas para que el usuario elija");
                             for (Cuenta c:clienteEnSesion.getCuentas()) {
                                 cuentas+=c.getNumeroCuenta()+", ";
                             }
@@ -379,23 +392,28 @@ public class Hilo extends Thread {
                                 log(clienteEnSesion.getUser().getUsuario()+" ha intentado mirar el saldo de una cuenta");
                                 System.out.println("Cuenta NO encontrada");
                                 textoSalida.writeBoolean(false);
+                                System.out.println("Cuenta elejida no encontrada");
                             }else{
                                 log(clienteEnSesion.getUser().getUsuario()+" ha mirado el saldo de la cuenta "+ verCuenta.getNumeroCuenta());
                                 System.out.println("Cuenta encontrada");
                                 textoSalida.writeBoolean(true);
                                 objetoSalida = new ObjectOutputStream(cliente.getOutputStream());
                                 objetoSalida.writeObject(verCuenta);
+                                System.out.println("Cuenta elejida encontrada y enviada");
                             }
                         }
                         break;
                     }
                     case 3: {
+                        System.out.println("opcion 3, obteniendo log para enviarlo");
                         String logCliente=cogerLog();
                         textoSalida= new DataOutputStream(cliente.getOutputStream());
                         textoSalida.writeUTF(logCliente);
+                        System.out.println("log enviado");
                         break;
                     }
                     case 4: {
+                        System.out.println("opcion 4, verificando cuentas");
                         String cuentas="";
                         if(clienteEnSesion.getCuentas().isEmpty()){
                             log(clienteEnSesion.getUser().getUsuario()+" ha intentado hacer transferencias pero no tiene ninguna cuenta hecha");
@@ -403,7 +421,9 @@ public class Hilo extends Thread {
                             textoSalida= new DataOutputStream(cliente.getOutputStream());
                             textoSalida.writeBoolean(false);
                             textoSalida.writeUTF(cuentas);
+                            System.out.println("no hay cuentas");
                         }else {
+                            System.out.println("Almacenando y enviando cuentas para que el usuario elija");
                             for (Cuenta c : clienteEnSesion.getCuentas()) {
                                 cuentas += c.getNumeroCuenta() + ", ";
                             }
@@ -457,24 +477,29 @@ public class Hilo extends Thread {
                                     System.out.println("Cuenta NO encontrada");
                                     textoSalida.writeBoolean(false);
                                     textoSalida.writeUTF("Cuenta NO encontrada");
+                                    System.out.println("cuenta elejida no encontrada");
                                 } else {
                                     textoSalida.writeBoolean(true);
                                     objetoSalida = new ObjectOutputStream(cliente.getOutputStream());
                                     objetoSalida.writeObject(verCuenta);
                                     log(clienteEnSesion.getUser().getUsuario()+" ha hecho un ingreso a la cuenta "+verCuenta.getNumeroCuenta()
                                      +" de "+saldo+" y ahora tiene " +verCuenta.getSaldo());
+                                    System.out.println("Cuenta elejida encontrada, modificada y enviada");
                                 }
                             }else{
                                 log(clienteEnSesion.getUser().getUsuario()+" ha intentado ingresar dinero");
                                 textoSalida = new DataOutputStream(cliente.getOutputStream());
                                 textoSalida.writeBoolean(false);
                                 textoSalida.writeUTF("El codigo descifrado no es correcto");
+                                System.out.println("Codigo enviado incorrecto");
                             }
                         }
 
                         break;
                     }
                     case 5:{
+                        System.out.println("opcion 5, verificando cuentas");
+
                         String cuentas="";
                         if(clienteEnSesion.getCuentas().isEmpty()){
                             log(clienteEnSesion.getUser().getUsuario()+" ha intentado hacer transferencias pero no tiene ninguna cuenta hecha");
@@ -482,13 +507,16 @@ public class Hilo extends Thread {
                             textoSalida= new DataOutputStream(cliente.getOutputStream());
                             textoSalida.writeBoolean(false);
                             textoSalida.writeUTF(cuentas);
+                            System.out.println("no hay cuentas");
                         }else if(clienteEnSesion.getCuentas().size()<2){
                             log(clienteEnSesion.getUser().getUsuario()+" ha intentado hacer transferencias pero no tiene dos cuentas para hacerlo");
                             cuentas="No hay dos cuentas para poder hacer la trasfencia de una a otra";
                             textoSalida= new DataOutputStream(cliente.getOutputStream());
                             textoSalida.writeBoolean(false);
                             textoSalida.writeUTF(cuentas);
+                            System.out.println("no hay 2 cuentas para hacer una transferencia");
                         }else {
+                            System.out.println("Almacenando y enviando cuentas para que el usuario elija");
                             for (Cuenta c : clienteEnSesion.getCuentas()) {
                                 cuentas += c.getNumeroCuenta() + ", ";
                             }
@@ -543,8 +571,10 @@ public class Hilo extends Thread {
                                         }
 
                                     }
+                                }
+                                for (Cuenta c : clienteEnSesion.getCuentas()) {
                                     if (c.getNumeroCuenta().equals(cuenta2Descifrado)) {
-                                        if(posibleTransferencia){
+                                        if(posibleTransferencia && modCuenta1 !=null){
                                             c.setSaldo(c.getSaldo() + saldo);
                                             modCuenta2 = c;
                                         }else{
@@ -561,6 +591,7 @@ public class Hilo extends Thread {
                                     System.out.println("Cuentas NO encontradas");
                                     textoSalida.writeBoolean(false);
                                     textoSalida.writeUTF("Cuentas NO encontradas");
+                                    System.out.println("Cuentas NO encontradas");
                                 } else {
                                     List<Cuenta> listaCuentas= new ArrayList<>();
                                     listaCuentas.add(modCuenta1);
@@ -571,12 +602,14 @@ public class Hilo extends Thread {
                                         objetoSalida.writeObject(listaCuentas);
                                         log(clienteEnSesion.getUser().getUsuario()+" ha hecho una transferencia desde la cuenta "+modCuenta1.getNumeroCuenta()
                                             +" a la cuenta " +modCuenta2.getNumeroCuenta());
+                                        System.out.println("Transferencia hecha");
                                     }else{
                                         textoSalida.writeBoolean(false);
                                         textoSalida.writeUTF("Se ha intentado hacer una transferencia desde la cuenta "+modCuenta1.getNumeroCuenta()
                                                 +" a la cuenta " +modCuenta2.getNumeroCuenta()+", pero \n el saldo que quiere transferir desde la primera cuenta ("+saldo+") a la segunda supera lo que tiene guardado ("+modCuenta1.getSaldo()+") con lo que no se ha podido hacer");
                                         log(clienteEnSesion.getUser().getUsuario()+" ha intentado hacer una transferencia desde la cuenta "+modCuenta1.getNumeroCuenta()
                                                 +" a la cuenta " +modCuenta2.getNumeroCuenta());
+                                        System.out.println("Transferencia no hecha por cantidad superior al almacenado");
                                     }
                                 }
                             }else{
@@ -584,6 +617,7 @@ public class Hilo extends Thread {
                                 textoSalida = new DataOutputStream(cliente.getOutputStream());
                                 textoSalida.writeBoolean(false);
                                 textoSalida.writeUTF("El codigo descifrado no es correcto");
+                                System.out.println("Codigo enviado incorrecto");
                             }
                         }
                         break;
