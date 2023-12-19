@@ -27,20 +27,19 @@ public class Servidor {
     public static void main(String[] args) throws IOException, ClassNotFoundException, NoSuchAlgorithmException {
         System.out.println("Incializando servidor");
 
-        System.setProperty("javax.net.ssl.keyStore","src/files/AlmacenSSL.jks");
+        /*System.setProperty("javax.net.ssl.keyStore","src/files/AlmacenSSL.jks");
         System.setProperty("javax.net.ssl.keyStorePassword","12345Abcde");
         // Crea el Socket de servicio
         int puerto = 6000;
         SSLServerSocketFactory sfact = (SSLServerSocketFactory) SSLServerSocketFactory.getDefault();
         SSLServerSocket servidorSSL = (SSLServerSocket) sfact.createServerSocket(puerto);
-        SSLSocket clienteConectado = null;
-
-
-
+        SSLSocket clienteConectado = null;*/
+        ServerSocket servidor = new ServerSocket(6000);
+        Socket clienteConectado  = new Socket();
 
         System.out.println("Esperando conexion cliente");
         while (true) {
-            clienteConectado = (SSLSocket) servidorSSL.accept();;
+             clienteConectado  =  servidor.accept();
 
             Hilo hilo = new Hilo(clienteConectado);
             hilo.start();

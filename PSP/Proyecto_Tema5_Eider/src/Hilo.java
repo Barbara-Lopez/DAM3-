@@ -3,6 +3,7 @@ import modelos.*;
 import javax.crypto.Cipher;
 import javax.net.ssl.SSLSocket;
 import java.io.*;
+import java.net.Socket;
 import java.security.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -13,7 +14,7 @@ import java.util.*;
  */
 public class Hilo extends Thread {
 
-    private static SSLSocket cliente;
+    private static Socket cliente;
     private static Cipher rsaCipher;
     private static ObjectOutputStream objetoSalida;
     private static ObjectInputStream objetoEntrada;
@@ -22,11 +23,20 @@ public class Hilo extends Thread {
     private static PublicKey clavepub;
     private static Integer opcion1=0;
     private static Integer opcion2=0;
-    private static Client clienteEnSesion;
+    private static volatile Client clienteEnSesion;
+    private static ThreadLocal<Client> clienteEnSesion1 = new ThreadLocal<>();
+
+    public static void setClienteEnSesion(Client cliente) {
+        clienteEnSesion1.set(cliente);
+    }
+
+    public static Client getClienteEnSesion() {
+        return clienteEnSesion1.get();
+    }
     private static DataOutputStream textoSalida;
     private static DataInputStream textoEntrada;
     private static Boolean sesionIniciada;
-    public Hilo(SSLSocket c) {
+    public Hilo(Socket c) {
         this.cliente = c;
 
     }
@@ -180,6 +190,7 @@ public class Hilo extends Thread {
             if(Objects.equals(contrasenaGuardada, contrasenaEnviada)){
                 textoSalida.writeBoolean(true);
                 clienteEnSesion=c;
+                Hilo.setClienteEnSesion(clienteEnSesion);
                 sesionIniciada=true;
             }else{
                 sesionIniciada=false;
@@ -307,7 +318,7 @@ public class Hilo extends Thread {
      * Una vez se inicia sesión correctamente hace que las operaciones se guarden en los ficheros
      * de esa manera tenemos la información actualizada
      */
-    public static void operacionesCuenta(){
+    public  static void operacionesCuenta(){
 
         do {
             try {
@@ -315,6 +326,7 @@ public class Hilo extends Thread {
                 opcion2= op2.readInt();
                 switch(opcion2){
                     case 1: {
+                        clienteEnSesion = Hilo.getClienteEnSesion();
                         System.out.println("opcion 1, creando cuenta");
                         Random random = new Random();
                         int lowerBound = 0;
@@ -352,9 +364,11 @@ public class Hilo extends Thread {
                         objetoSalida.writeObject(c);
                         log(clienteEnSesion.getUser().getUsuario()+" ha creado una nueva cuenta bancaria, "+c.getNumeroCuenta());
                         System.out.println("cuenta Creada y guardada correctamente");
+                        Hilo.setClienteEnSesion(clienteEnSesion);
                         break;
                     }
                     case 2: {
+                        clienteEnSesion = Hilo.getClienteEnSesion();
                         System.out.println("opcion 2, verificando cuentas");
                         String cuentas="";
                         if(clienteEnSesion.getCuentas().isEmpty()){
@@ -402,9 +416,11 @@ public class Hilo extends Thread {
                                 System.out.println("Cuenta elejida encontrada y enviada");
                             }
                         }
+                        Hilo.setClienteEnSesion(clienteEnSesion);
                         break;
                     }
                     case 3: {
+                        clienteEnSesion = Hilo.getClienteEnSesion();
                         System.out.println("opcion 3, obteniendo log para enviarlo");
                         String logCliente=cogerLog();
                         textoSalida= new DataOutputStream(cliente.getOutputStream());
@@ -413,6 +429,7 @@ public class Hilo extends Thread {
                         break;
                     }
                     case 4: {
+                        clienteEnSesion = Hilo.getClienteEnSesion();
                         System.out.println("opcion 4, verificando cuentas");
                         String cuentas="";
                         if(clienteEnSesion.getCuentas().isEmpty()){
@@ -494,10 +511,11 @@ public class Hilo extends Thread {
                                 System.out.println("Codigo enviado incorrecto");
                             }
                         }
-
+                        Hilo.setClienteEnSesion(clienteEnSesion);
                         break;
                     }
                     case 5:{
+                        clienteEnSesion = Hilo.getClienteEnSesion();
                         System.out.println("opcion 5, verificando cuentas");
 
                         String cuentas="";
@@ -620,9 +638,11 @@ public class Hilo extends Thread {
                                 System.out.println("Codigo enviado incorrecto");
                             }
                         }
+                        Hilo.setClienteEnSesion(clienteEnSesion);
                         break;
                     }
                     case 6: {
+                        clienteEnSesion = Hilo.getClienteEnSesion();
                         log(clienteEnSesion.getUser().getUsuario()+" ha salido de las operaciones ");
                         System.out.println(clienteEnSesion.getNombre()+" Sale de las operaciones de la app");
                         break;

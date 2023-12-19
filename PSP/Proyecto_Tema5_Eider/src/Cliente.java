@@ -7,6 +7,8 @@ import javax.crypto.Cipher;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 import java.io.*;
+import java.net.InetAddress;
+import java.net.Socket;
 import java.security.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +21,7 @@ import java.util.regex.Pattern;
  */
 public class Cliente {
     private static PublicKey clavepubServer;
-    private static SSLSocket cliente;
+    private static Socket cliente;
     private static PrivateKey clavepriv;
     private static ObjectInputStream objetoEntrada;
     private static ObjectOutputStream objetoSalida;
@@ -34,15 +36,16 @@ public class Cliente {
      * @param args
      */
     public static void main(String[] args) {
-        System.setProperty("javax.net.ssl.trustStore", "src/files/UsuarioAlmacenSSL");
-        System.setProperty("javax.net.ssl.trustStorePassword", "890123");
+        //System.setProperty("javax.net.ssl.trustStore", "src/files/UsuarioAlmacenSSL");
+        //System.setProperty("javax.net.ssl.trustStorePassword", "890123");
         try{
             //Crear el Socket Seguro
             String host="localhost";
             int puerto=6000;
             System.out.println("Programa cliente iniciado..");
-            SSLSocketFactory sfact=(SSLSocketFactory)SSLSocketFactory.getDefault();
-            cliente=(SSLSocket) sfact.createSocket(host,puerto);
+            //SSLSocketFactory sfact=(SSLSocketFactory)SSLSocketFactory.getDefault();
+            //cliente=(SSLSocket) sfact.createSocket(host,puerto);
+            cliente = new Socket("localhost",puerto);
 
             KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
             //SE CREA EL PAR DE CLAVES PRIVADA Y PÚBLICA
@@ -84,7 +87,10 @@ public class Cliente {
                                         break;
                                     }else{
                                         ObjectOutputStream firmaDigital= new ObjectOutputStream(cliente.getOutputStream());
-                                        byte[] firmaHecha = "No se ha firmado".getBytes();
+                                        Signature rsaSignature = Signature.getInstance("SHA256withRSA");
+                                        rsaSignature.initSign(clavepriv);
+                                        rsaSignature.update("No está firmado".getBytes());
+                                        byte[] firmaHecha = rsaSignature.sign();
                                         firmaDigital.writeObject(new Mensaje(textoFirmar,firmaHecha));
                                         break;
                                     }
