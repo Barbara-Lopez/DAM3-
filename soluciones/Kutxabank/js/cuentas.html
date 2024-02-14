@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Listado de cuentas</title>
+</head>
+<body>
+
+Cuentas: <select id="lCuentas">
+<option> Elige una cuenta</option>
+</select>
+<br>
+<br>
+<input type="checkbox"  id ="chFecha" > Mostrar movimientos ordenados por fecha
+<br>
+<input type="checkbox"  id="chImporte"> Mostrar movimientos ordenados por importe
+<br>
+<br>
+<div id="dMovimientos">
+
+</div>
+
+<script src="..\js\jquery-3.5.1.js"></script>
+<script src="..\js\Modelo\Titular.js"></script>
+<script src="..\js\Modelo\Cuenta.js"></script>
+<script src="..\js\Modelo\Movimiento.js"></script>
+<script src="..\js\funcionesCuentas.js"></script>
+</body>
+</html>

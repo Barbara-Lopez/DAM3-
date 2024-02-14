@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://code.jquery.com/jquery-3.0.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js"></script>
+</head>
+<body>
+    <button id="boton">mensaje</button>
+    <script>
+        $('#boton').click(function(){
+
+            alert("hola");
+            
+           
+            $.notify.addStyle('happyblue', {
+            html: "<div>☺<span data-notify-text/>☺</div>",
+            classes: {
+                base: {
+                "white-space": "nowrap",
+                "background-color": "lightblue",
+                "padding": "5em"
+                },
+                superblue: {
+                "color": "white",
+                "background-color": "blue"
+                }
+            }
+            });
+        $.notify("Access granted",{position:"top center", style:'happyblue'});
+        });
+    </script>
+</body>
+</html>

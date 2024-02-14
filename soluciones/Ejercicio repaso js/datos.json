@@ -1,0 +1,14 @@
+{"datos":
+    [{"dni":"11111111A","contrasena":123456,"cuentas":
+        [{"numero" : "1111111111",
+            "movimientos":
+            [
+                {"importe":100,"fecha":"2020-11-19T23:00:00.000Z","tipo":"Imposición"},
+                {"importe":300,"fecha":"2020-11-10T23:00:00.000Z","tipo":"Reintegro"},
+                {"importe":50,"fecha":"2020-11-02T23:00:00.000Z","tipo":"Imposición"},
+                {"importe":250,"fecha":"2020-11-10T23:00:00.000Z","tipo":"Reintegro"}
+
+            ]
+        }]
+    }]
+}
